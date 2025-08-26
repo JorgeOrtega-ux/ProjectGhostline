@@ -64,8 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isAnimating || !moduleOptions.classList.contains('active')) return;
         isAnimating = true;
         
-        // --- MODIFICACIÓN CLAVE ---
-        // Limpia cualquier estilo inline de un posible drag anterior para que la animación CSS funcione.
         menuContentOptions.removeAttribute('style');
 
         moduleOptions.classList.remove('fade-in');
@@ -101,24 +99,39 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(event) {
             event.stopPropagation();
             const action = this.getAttribute('data-action');
+            let moduleName;
 
+            // --- INICIO DE LA CORRECCIÓN ---
+            // Extrae el nombre del módulo correctamente desde la acción
             if (action === 'toggleModuleOptions') {
-                if (moduleOptions.classList.contains('active')) {
+                moduleName = 'moduleOptions';
+            } else if (action === 'toggleModuleSurface') {
+                moduleName = 'moduleSurface';
+            }
+            // --- FIN DE LA CORRECCIÓN ---
+
+            if (!moduleName) return;
+
+            const targetModule = document.querySelector(`.module-content[data-module="${moduleName}"]`);
+            if (!targetModule) return;
+
+            const isTargetActive = targetModule.classList.contains('active');
+
+            closeAllActiveModules(isTargetActive ? null : targetModule);
+
+            if (isTargetActive) {
+                if (targetModule.dataset.module === 'moduleOptions') {
                     closeMenuOptions();
                 } else {
-                    openMenuOptions();
+                    targetModule.classList.remove('active');
+                    targetModule.classList.add('disabled');
                 }
-            } else if (action === 'toggleModuleSurface') {
-                const surfaceModule = document.querySelector('[data-module="moduleSurface"]');
-                if (!surfaceModule) return;
-                const isSurfaceActive = surfaceModule.classList.contains('active');
-                closeAllActiveModules(isSurfaceActive ? null : surfaceModule);
-                if (isSurfaceActive) {
-                    surfaceModule.classList.remove('active');
-                    surfaceModule.classList.add('disabled');
+            } else {
+                if (targetModule.dataset.module === 'moduleOptions') {
+                    openMenuOptions();
                 } else {
-                    surfaceModule.classList.remove('disabled');
-                    surfaceModule.classList.add('active');
+                    targetModule.classList.remove('disabled');
+                    targetModule.classList.add('active');
                 }
             }
         });
@@ -129,8 +142,29 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === "Escape") closeAllActiveModules();
         });
     }
+    
+    document.addEventListener('click', function(event) {
+        const activeModuleOptions = document.querySelector('.module-content[data-module="moduleOptions"].active');
+        const activeButtonOptions = document.querySelector('.header-button[data-action="toggleModuleOptions"]');
+        
+        const activeModuleSurface = document.querySelector('.module-content[data-module="moduleSurface"].active');
+        const activeButtonSurface = document.querySelector('.header-button[data-action="toggleModuleSurface"]');
 
-    // --- DRAG & CLICK OUTSIDE PARA MODULE OPTIONS ---
+        if (activeModuleOptions && activeButtonOptions) {
+            if (!activeModuleOptions.contains(event.target) && !activeButtonOptions.contains(event.target)) {
+                closeMenuOptions();
+            }
+        }
+        
+        if (activeModuleSurface && activeButtonSurface) {
+             if (!activeModuleSurface.contains(event.target) && !activeButtonSurface.contains(event.target)) {
+                activeModuleSurface.classList.remove('active');
+                activeModuleSurface.classList.add('disabled');
+            }
+        }
+    });
+
+    // --- DRAG PARA MODULE OPTIONS (SOLO AFECTA MÓVILES) ---
     if (moduleOptions && menuContentOptions) {
         const dragHandle = moduleOptions.querySelector('.drag-handle');
         let isDragging = false, startY, currentY;
@@ -162,8 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeMenuOptionsMobile();
             } else {
                 menuContentOptions.style.transform = 'translateY(0)';
-                // --- MODIFICACIÓN CLAVE ---
-                // Limpia el atributo style por completo una vez que la animación de retorno termina.
                 menuContentOptions.addEventListener('transitionend', () => {
                    menuContentOptions.removeAttribute('style');
                 }, { once: true });
@@ -178,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('mouseup', dragEnd);
         document.addEventListener('touchmove', dragging);
         document.addEventListener('touchend', dragEnd);
-
+        
         moduleOptions.addEventListener('click', function(event) {
             if (event.target === moduleOptions) {
                 closeMenuOptions();
