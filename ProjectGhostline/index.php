@@ -90,11 +90,7 @@
             // =================================================================
             // ========================= CONFIGURATION =========================
             // =================================================================
-            // Set to 'true' to allow multiple modules to be open at once.
-            // Set to 'false' to ensure only one module can be active at a time.
             let allowMultipleActiveModules = false;
-
-            // Set to 'true' to allow closing active modules by pressing the ESC key.
             let enableCloseWithEscape = true;
             // =================================================================
 
@@ -102,7 +98,6 @@
             const buttons = document.querySelectorAll('.header-button[data-action]');
             const modules = document.querySelectorAll('.module-content[data-module]');
 
-            // Function to close all active modules
             function closeActiveModules() {
                 modules.forEach(m => {
                     m.classList.remove('active');
@@ -126,14 +121,9 @@
 
                         if (targetModule) {
                             const isTargetModuleActive = targetModule.classList.contains('active');
-
-                            // If multiple modules are not allowed, close all of them first
                             if (!allowMultipleActiveModules) {
                                 closeActiveModules();
                             }
-
-                            // If the clicked module was not active, activate it.
-                            // If it was already active (and we closed the others), this toggle will deactivate it.
                             if (!isTargetModuleActive || allowMultipleActiveModules) {
                                 targetModule.classList.toggle('disabled');
                                 targetModule.classList.toggle('active');
@@ -143,7 +133,6 @@
                 });
             });
 
-            // Event listener for the 'Escape' key
             if (enableCloseWithEscape) {
                 document.addEventListener('keydown', function(event) {
                     if (event.key === "Escape") {
@@ -151,6 +140,90 @@
                     }
                 });
             }
+
+            // =================================================================
+            // ===================== DRAGGABLE MENU SCRIPT =====================
+            // =================================================================
+            const moduleOptions = document.querySelector('[data-module="moduleOptions"]');
+            const menuContent = moduleOptions.querySelector('.menu-content');
+            const dragHandle = moduleOptions.querySelector('.drag-handle');
+
+            let isAnimating = false;
+            let isDragging = false;
+            let startY;
+            let currentY;
+
+            // =================================================================
+            // ================ ANIMATED CLOSING FUNCTION ======================
+            // =================================================================
+            function closeOptionsMenu() {
+                if (isAnimating || !moduleOptions.classList.contains('active')) return;
+
+                isAnimating = true;
+
+                // Elimina los estilos en línea del arrastre para que la animación CSS tome el control.
+                menuContent.removeAttribute('style');
+
+                moduleOptions.classList.add('is-closing');
+
+                setTimeout(() => {
+                    moduleOptions.classList.add('disabled');
+                    moduleOptions.classList.remove('active');
+                    moduleOptions.classList.remove('is-closing');
+                    isAnimating = false;
+                }, 300); 
+            }
+
+
+            function dragStart(e) {
+                if (isAnimating) return;
+                isDragging = true;
+                startY = e.pageY || e.touches[0].pageY;
+                // Desactiva temporalmente la transición para un arrastre fluido.
+                menuContent.style.transition = 'none';
+            }
+
+            function dragging(e) {
+                if (!isDragging) return;
+                currentY = e.pageY || e.touches[0].pageY;
+                const diffY = currentY - startY;
+                if (diffY > 0) {
+                    menuContent.style.transform = `translateY(${diffY}px)`;
+                }
+            }
+
+            function dragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const dragDistance = currentY - startY;
+                const menuHeight = menuContent.offsetHeight;
+
+                if (dragDistance > menuHeight * 0.4) {
+                    closeOptionsMenu();
+                } else {
+                    // Si no se cierra, elimina el atributo style para que vuelva a su
+                    // posición original con la transición definida en el CSS.
+                    menuContent.removeAttribute('style');
+                }
+            }
+
+            dragHandle.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', dragging);
+            document.addEventListener('mouseup', dragEnd);
+
+            dragHandle.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', dragging);
+            document.addEventListener('touchend', dragEnd);
+
+            // =================================================================
+            // ========= CLICK OUTSIDE (ON OVERLAY) TO CLOSE SCRIPT ==========
+            // =================================================================
+            moduleOptions.addEventListener('click', function(event) {
+                if (event.target === moduleOptions) {
+                    closeOptionsMenu();
+                }
+            });
         });
     </script>
 </body>

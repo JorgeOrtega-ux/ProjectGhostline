@@ -155,8 +155,6 @@ body {
 
 
 
-
-
 .module-content.module-options {
     position: absolute;
     top: calc(100% + 5px);
@@ -295,5 +293,12 @@ body {
         padding-top: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
+        /* AÑADIDO: Transición para la animación */
+        transition: transform 0.3s ease-out;
+    }
+
+    /* AÑADIDO: Clase para la animación de cierre */
+    .module-content.module-options.is-closing .menu-content {
+        transform: translateY(100%);
     }
 }
