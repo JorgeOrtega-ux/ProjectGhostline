@@ -31,6 +31,9 @@
                         </div>
                         <div class="module-content module-options disabled" data-module="moduleOptions">
                             <div class="menu-content">
+                                <div class="pill-container">
+                                    <div class="drag-handle"></div>
+                                </div>
                                 <div class="menu-list">
                                     <div class="menu-link">
                                         <div class="menu-link-icon">
@@ -83,7 +86,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // =================================================================
             // ========================= CONFIGURATION =========================
             // =================================================================
@@ -108,7 +111,7 @@
             }
 
             buttons.forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const action = this.getAttribute('data-action');
                     let moduleName;
 
@@ -142,7 +145,7 @@
 
             // Event listener for the 'Escape' key
             if (enableCloseWithEscape) {
-                document.addEventListener('keydown', function (event) {
+                document.addEventListener('keydown', function(event) {
                     if (event.key === "Escape") {
                         closeActiveModules();
                     }
