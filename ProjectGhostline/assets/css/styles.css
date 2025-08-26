@@ -88,9 +88,6 @@ body {
     height: 100%;
 }
 
-
-
-
 .header {
     position: relative;
     display: flex;
@@ -142,18 +139,6 @@ body {
 .header-button:hover {
     background-color: #f5f5fa;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 .module-content.module-options {
     position: absolute;
@@ -245,7 +230,6 @@ body {
     background-color: #f5f5fa;
 }
 
-
 .disabled {
     display: none;
 }
@@ -259,7 +243,6 @@ body {
     justify-content: center;
     width: 100%;
     padding: 8px 0;
-
 }
 
 .drag-handle {
@@ -272,6 +255,26 @@ body {
     cursor: pointer;
 }
 
+/* --- Keyframes para el fondo/overlay --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+
 @media (max-width: 468px) {
     .pill-container {
         display: flex;
@@ -282,23 +285,37 @@ body {
         top: 0;
         left: 0;
         z-index: 999;
-        justify-content: center;
-        align-items: flex-end;
+        justify-content: flex-end; /* Alinea el menu-content abajo */
+        align-items: center;
+        flex-direction: column;
         width: 100%;
         height: 100%;
-        background-color: #00000080;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 
     .module-options .menu-content {
+        width: 100%;
         padding-top: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        /* AÑADIDO: Transición para la animación */
+        transform: translateY(100%); /* Oculto por defecto */
         transition: transform 0.3s ease-out;
     }
 
-    /* AÑADIDO: Clase para la animación de cierre */
-    .module-content.module-options.is-closing .menu-content {
-        transform: translateY(100%);
+    /* Clase 'active' para el contenido del menú, controla la animación de deslizamiento */
+    .module-options .menu-content.active {
+        transform: translateY(0);
+    }
+
+    .module-content.module-surface {
+        width: 100%;
+        padding: 0;
+    }
+
+    .module-surface .menu-content {
+        width: 100%;
+        box-shadow: unset;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
     }
 }
