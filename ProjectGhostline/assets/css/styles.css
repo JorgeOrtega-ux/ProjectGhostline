@@ -293,50 +293,6 @@ body {
 }
 
 
-@media (max-width: 468px) {
-    .pill-container {
-        display: flex;
-    }
-
-    .module-content.module-options {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 999;
-        justify-content: flex-end; /* Alinea el menu-content abajo */
-        align-items: center;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .module-options .menu-content {
-        width: 100%;
-        padding-top: 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        transform: translateY(100%);
-        transition: transform 0.3s ease-out;
-    }
-
-    /* Clase 'active' para el contenido del menú, controla la animación de deslizamiento */
-    .module-options .menu-content.active {
-        transform: translateY(0);
-    }
-
-    .module-content.module-surface {
-        width: 100%;
-        padding: 0;
-    }
-
-    .module-surface .menu-content {
-        width: 100%;
-        box-shadow: unset;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-}
 .section-wrapper {
     width: 100%;
     display: flex;
@@ -659,3 +615,53 @@ body {
 /* ========================================================== */
 /* ===== FIN: ESTILOS SECCIÓN "ACERCA DE PROJECTGHOSTLINE" ===== */
 /* ========================================================== */
+@media (max-width: 468px) {
+    .pill-container {
+        display: flex;
+    }
+
+    .module-content.module-options {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        justify-content: flex-end; /* Alinea el menu-content abajo */
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .module-options .menu-content {
+        width: 100%;
+        padding-top: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-out;
+    }
+
+    /* Clase 'active' para el contenido del menú, controla la animación de deslizamiento */
+    .module-options .menu-content.active {
+        transform: translateY(0);
+    }
+
+    .module-content.module-surface {
+        width: 100%;
+        padding: 0;
+    }
+
+    .module-surface .menu-content {
+        width: 100%;
+        box-shadow: unset;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    
+    /* --- INICIO DE LA MODIFICACIÓN --- */
+    .settings-card--vertical .selector-container {
+        width: 100%;
+    }
+    /* --- FIN DE LA MODIFICACIÓN --- */
+}
