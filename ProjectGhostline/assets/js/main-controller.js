@@ -25,7 +25,8 @@ function initMainController() {
         }
     });
 
-    function handleNavigation(section, subsection, updateHistory = true) {
+    // --- INICIO DE LA MODIFICACIÓN: Se añade el parámetro "menuToKeep" ---
+    function handleNavigation(section, subsection, updateHistory = true, menuToKeep = null) {
         document.querySelectorAll('.section-wrapper, .section-container').forEach(el => {
             el.classList.remove('active');
             el.classList.add('disabled');
@@ -34,22 +35,31 @@ function initMainController() {
         document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
 
         let targetWrapper, targetSection, activeMenu;
+        const menuSection = menuToKeep || section; // Usar el menú a mantener, o el actual por defecto
 
         if (section === 'settings') {
             targetWrapper = document.querySelector('[data-wrapper="wrapperSettings"]');
             targetSection = document.querySelector(`[data-section="section${capitalize(subsection)}"]`);
-            activeMenu = document.querySelector(`[data-menu-list="settings"] [data-action="toggleSection${capitalize(subsection)}"]`);
-            showMenuList('settings');
         } else if (section === 'help') {
             targetWrapper = document.querySelector('[data-wrapper="wrapperHelp"]');
             targetSection = document.querySelector(`[data-section="section${capitalize(subsection)}"]`);
-            activeMenu = document.querySelector(`[data-menu-list="help"] [data-action="toggleSection${capitalize(subsection)}"]`);
-            showMenuList('help');
         } else {
             targetWrapper = document.querySelector('[data-wrapper="wrapperMain"]');
             targetSection = document.querySelector(`[data-section="section${capitalize(section)}"]`);
-            activeMenu = document.querySelector(`[data-menu-list="main"] [data-action="toggleSection${capitalize(section)}"]`);
+        }
+        
+        // La visualización del menú ahora depende de "menuSection"
+        if (menuSection === 'settings') {
+            showMenuList('settings');
+            // Si estamos en un submenú de ayuda pero mantenemos el menú de config, "about" sigue activo
+            const activeSubsection = (section === 'help' && menuToKeep === 'settings') ? 'about' : subsection;
+            activeMenu = document.querySelector(`[data-menu-list="settings"] [data-action="toggleSection${capitalize(activeSubsection)}"]`);
+        } else if (menuSection === 'help') {
+            showMenuList('help');
+            activeMenu = document.querySelector(`[data-menu-list="help"] [data-action="toggleSection${capitalize(subsection)}"]`);
+        } else {
             showMenuList('main');
+            activeMenu = document.querySelector(`[data-menu-list="main"] [data-action="toggleSection${capitalize(section)}"]`);
         }
 
         if (targetWrapper) {
@@ -65,10 +75,12 @@ function initMainController() {
         }
 
         if (updateHistory) {
+            // La URL sigue reflejando la sección de contenido real
             navigateToUrl(section, subsection);
         }
         closeAllActiveModules();
     }
+    // --- FIN DE LA MODIFICACIÓN ---
 
     function showMenuList(menuName) {
         document.querySelectorAll('[data-menu-list]').forEach(menu => {
@@ -189,7 +201,6 @@ function initMainController() {
         return s.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
     }
     
-    // --- INICIO DE LA MODIFICACIÓN ---
     function toggleModuleSelector(button) {
         const container = button.closest('.selector-container');
         if (!container) return;
@@ -237,7 +248,6 @@ function initMainController() {
         closeAllActiveModules();
         button.blur();
     }
-    // --- FIN DE LA MODIFICACIÓN ---
 
     // --- Event Listeners ---
     buttons.forEach(button => {
@@ -264,18 +274,28 @@ function initMainController() {
                 const sectionNameRaw = action.replace('toggleSection', '');
                 const sectionName = sectionNameRaw.toLowerCase();
                 const mainSections = ['home', 'explore', 'trash'];
-                const settingsSubsections = ['accessibility', 'privacy'];
+                const settingsSubsections = ['accessibility', 'about'];
                 const helpSubsections = ['privacy-policy', 'terms', 'cookies', 'feedback'];
                 const subsectionMap = { 'privacypolicy': 'privacy-policy' };
                 const finalSubsection = subsectionMap[sectionName] || sectionName;
                 
+                // --- INICIO DE LA MODIFICACIÓN: Lógica de navegación contextual ---
+                const currentActiveMenuLink = document.querySelector('.menu-link.active');
+                const isFromAboutPage = currentActiveMenuLink && currentActiveMenuLink.dataset.action === 'toggleSectionAbout';
+
                 if (mainSections.includes(finalSubsection)) {
                     handleNavigation(finalSubsection, null);
                 } else if (settingsSubsections.includes(finalSubsection)) {
                     handleNavigation('settings', finalSubsection);
                 } else if (helpSubsections.includes(finalSubsection)) {
-                    handleNavigation('help', finalSubsection);
+                    // Si el link es de ayuda y venimos de la página "about", mantenemos el menú de settings
+                    if (isFromAboutPage) {
+                        handleNavigation('help', finalSubsection, true, 'settings');
+                    } else {
+                        handleNavigation('help', finalSubsection);
+                    }
                 }
+                // --- FIN DE LA MODIFICACIÓN ---
                 return;
             }
 
@@ -312,7 +332,6 @@ function initMainController() {
         });
     });
 
-    // --- AÑADIDO: Event listener para las opciones del selector ---
     document.querySelectorAll('[data-module="moduleSelector"] .menu-link').forEach(link => {
         link.addEventListener('click', function() {
             handleSelectorChoice(this);

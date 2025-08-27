@@ -45,7 +45,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 </div>
                             </div>
                         </div>
-                        <div class="module-content module-options disabled" data-module="moduleOptions">
+                        <div class="module-content module-options disabled body-title" data-module="moduleOptions">
                             <div class="menu-content">
                                 <div class="pill-container">
                                     <div class="drag-handle"></div>
@@ -65,7 +65,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                     </div>
                 </div>
                 <div class="general-content-bottom">
-                    <div class="module-content module-surface disabled" data-module="moduleSurface">
+                    <div class="module-content module-surface disabled body-title" data-module="moduleSurface">
                         <div class="menu-content">
                             <div class="menu-list <?php echo $isMainMenu ? '' : 'disabled'; ?>" data-menu-list="main">
                                 <div class="menu-group menu-group-top">
@@ -94,9 +94,9 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">accessibility</span></div>
                                     <div class="menu-link-text"><span>Accesibilidad</span></div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'privacy') ? 'active' : ''; ?>" data-action="toggleSectionPrivacy">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">lock</span></div>
-                                    <div class="menu-link-text"><span>Privacidad individual</span></div>
+                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'about') ? 'active' : ''; ?>" data-action="toggleSectionAbout">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">info</span></div>
+                                    <div class="menu-link-text"><span>Acerca de ProjectGhostline</span></div>
                                 </div>
                             </div>
                             <div class="menu-list <?php echo $isHelpMenu ? '' : 'disabled'; ?>" data-menu-list="help">
@@ -234,7 +234,38 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                     </div>
                                 </div>
                             </div>
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacy">Sección de Privacidad</div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'about') ? 'active' : 'disabled'; ?>" data-section="sectionAbout">
+                                <div class="about-section">
+                                    <div class="about-card">
+                                        <div class="about-header">
+                                            <span class="material-symbols-rounded about-logo">hub</span>
+                                            <h2 class="about-title">ProjectGhostline</h2>
+                                        </div>
+                                        <div class="about-body">
+                                            <div class="about-version-info">
+                                                <span class="material-symbols-rounded">verified</span>
+                                                <span>Versión 1.0.0 (Build Oficial)</span>
+                                            </div>
+                                            <ul class="about-links-list">
+                                                <li class="about-link-item" data-action="toggleSectionPrivacyPolicy">
+                                                    <span>Política de Privacidad</span>
+                                                    <span class="material-symbols-rounded">open_in_new</span>
+                                                </li>
+                                                <li class="about-link-item" data-action="toggleSectionFeedback">
+                                                    <span>Informar un problema</span>
+                                                    <span class="material-symbols-rounded">open_in_new</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="about-card">
+                                        <div class="about-footer">
+                                            <p>Copyright 2025 jorgeortega-ux. Todos los derechos reservados.</p>
+                                            <p>ProjectGhostline es una realidad gracias al proyecto de código abierto <b>Ghostline Core</b> y a otro <b>software de código abierto</b>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="section-wrapper <?php echo $isHelpMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperHelp">
                             <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacyPolicy">Sección de Política de privacidad</div>

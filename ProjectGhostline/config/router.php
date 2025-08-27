@@ -6,7 +6,7 @@ class Router {
         'trash' => ['section' => 'trash', 'subsection' => null],
         'settings' => ['section' => 'settings', 'subsection' => 'accessibility'],
         'settings/accessibility' => ['section' => 'settings', 'subsection' => 'accessibility'],
-        'settings/privacy' => ['section' => 'settings', 'subsection' => 'privacy'],
+        'settings/about' => ['section' => 'settings', 'subsection' => 'about'],
         'help' => ['section' => 'help', 'subsection' => 'privacy-policy'],
         'help/privacy-policy' => ['section' => 'help', 'subsection' => 'privacy-policy'],
         'help/terms' => ['section' => 'help', 'subsection' => 'terms'],
