@@ -319,3 +319,7 @@ body {
         border-top-right-radius: 0;
     }
 }
+
+.menu-link.active {
+    background-color: #f5f5fa;
+}

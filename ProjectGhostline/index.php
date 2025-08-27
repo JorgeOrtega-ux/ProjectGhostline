@@ -60,26 +60,41 @@
                     <div class="module-content module-surface disabled" data-module="moduleSurface">
                         <div class="menu-content">
                             <div class="menu-list">
-                                <div class="menu-link">
-                                    <div class="menu-link-icon">
+                                <div class="menu-link active">
+                                    <div class="menu-link-icon" data-section="toggleSectionHome">
                                         <span class="material-symbols-rounded">home</span>
                                     </div>
                                     <div class="menu-link-text">
                                         <span>Pagina principal</span>
                                     </div>
                                 </div>
-                                <div class="menu-link">
+                                <div class="menu-link" data-section="toggleSectionExplore">
                                     <div class="menu-link-icon">
-                                        <span class="material-symbols-rounded">home</span>
+                                        <span class="material-symbols-rounded">folder</span>
                                     </div>
                                     <div class="menu-link-text">
-                                        <span>Mis colecciones</span>
+                                        <span>Explorar colecciones</span>
+                                    </div>
+                                </div>
+                                <div class="menu-link" data-action="toggleSectionTrash">
+                                    <div class="menu-link-icon">
+                                        <span class="material-symbols-rounded">delete</span>
+                                    </div>
+                                    <div class="menu-link-text">
+                                        <span>Papelera de reciclaje</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="general-content-scrolleable"></div>
+                    <div class="general-content-scrolleable">
+                        <div class="section-wrapper" data-wrapper="wrapperMain">
+                            <div class="section-container active" data-section="sectionHome">1</div>
+                            <div class="section-container disabled" data-section="sectionExplore">2</div>
+                            <div class="section-container disabled" data-section="sectionTrash">3</div>
+                        </div>
+                      
+                    </div>
                 </div>
             </div>
         </div>
