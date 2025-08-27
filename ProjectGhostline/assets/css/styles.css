@@ -177,25 +177,43 @@ body {
 .module-surface .menu-content {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
     width: 280px;
     height: 100%;
     padding: 8px;
-    gap: 8px;
     background-color: #ffffff;
     box-shadow: 0 4px 12px #00000020;
     border-radius: 12px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-color: #00000080 transparent;
+    scrollbar-width: thin;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .menu-list {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: auto;
-    gap: 4px;
     user-select: none;
 }
+
+/* --- INICIO DE LA MODIFICACIÓN --- */
+.module-surface .menu-list[data-menu-list="main"],
+.module-surface .menu-list[data-menu-list="settings"] {
+    flex-grow: 1; /* Permite que la lista crezca para ocupar el espacio vertical */
+}
+
+.menu-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* ESTA LÍNEA AÑADE EL ESPACIO DE 8PX ENTRE LOS LINKS */
+}
+
+.menu-group-bottom {
+    margin-top: auto; /* Empuja el grupo inferior hacia el fondo */
+}
+/* --- FIN DE LA MODIFICACIÓN --- */
 
 .menu-link {
     display: flex;

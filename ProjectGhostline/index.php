@@ -86,17 +86,21 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 </div>
                             </div>
                             <div class="menu-list <?php echo $isSettingsMenu ? '' : 'disabled'; ?>" data-menu-list="settings">
-                                <div class="menu-link" data-action="toggleSectionHome">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
-                                    <div class="menu-link-text"><span>Volver a inicio</span></div>
+                                <div class="menu-group menu-group-top">
+                                    <div class="menu-link" data-action="toggleSectionHome">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
+                                        <div class="menu-link-text"><span>Volver a inicio</span></div>
+                                    </div>
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : ''; ?>" data-action="toggleSectionAccessibility">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">accessibility</span></div>
+                                        <div class="menu-link-text"><span>Accesibilidad</span></div>
+                                    </div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : ''; ?>" data-action="toggleSectionAccessibility">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">accessibility</span></div>
-                                    <div class="menu-link-text"><span>Accesibilidad</span></div>
-                                </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'about') ? 'active' : ''; ?>" data-action="toggleSectionAbout">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">info</span></div>
-                                    <div class="menu-link-text"><span>Acerca de ProjectGhostline</span></div>
+                                <div class="menu-group menu-group-bottom">
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'about') ? 'active' : ''; ?>" data-action="toggleSectionAbout">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">info</span></div>
+                                        <div class="menu-link-text"><span>Acerca de ProjectGhostline</span></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="menu-list <?php echo $isHelpMenu ? '' : 'disabled'; ?>" data-menu-list="help">
