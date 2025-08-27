@@ -141,6 +141,6 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
         </div>
     </div>
 </body>
-<script type="module" src="<?php echo $BASE_URL; ?>/assets/js/main-controller.js"></script>
+<script type="module" src="<?php echo $BASE_URL; ?>/assets/js/init-app.js"></script>
 
 </html>

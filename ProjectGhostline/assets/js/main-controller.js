@@ -1,3 +1,5 @@
+// assets/js/main-controller.js
+
 import {
     initUrlManager,
     navigateToUrl,
@@ -5,7 +7,7 @@ import {
     setInitialHistoryState
 } from './url-manager.js';
 
-document.addEventListener('DOMContentLoaded', function() {
+function initMainController() {
     initUrlManager();
     setInitialHistoryState();
 
@@ -19,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuContentOptions = moduleOptions ? moduleOptions.querySelector('.menu-content') : null;
 
     // --- URL and State Management ---
-
     setupPopStateHandler((state) => {
         if (state) {
             handleNavigation(state.section, state.subsection, false);
@@ -27,13 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function handleNavigation(section, subsection, updateHistory = true) {
-        // Deactivate all wrappers and sections
+        // ... (el resto de la función handleNavigation permanece igual)
         document.querySelectorAll('.section-wrapper, .section-container').forEach(el => {
             el.classList.remove('active');
             el.classList.add('disabled');
         });
 
-        // Deactivate all menu links
         document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
 
         let targetWrapper, targetSection, activeMenu;
@@ -83,8 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     // --- Module Controls (Mobile vs PC) ---
+    // ... (el resto de las funciones como openMenuOptions, closeMenuOptions, etc., permanecen aquí)
     function openMenuOptions() {
         if (window.innerWidth <= 468) {
             openMenuOptionsMobile();
@@ -106,8 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!allowMultipleActiveModules) closeAllActiveModules();
         moduleOptions.classList.remove('disabled');
         moduleOptions.classList.add('active');
-        // --- MODIFICACIÓN ---
-        // Aseguramos que el contenido del menú esté visible en PC
         if (menuContentOptions) {
             menuContentOptions.classList.add('active');
         }
@@ -117,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!moduleOptions.classList.contains('active')) return;
         moduleOptions.classList.remove('active');
         moduleOptions.classList.add('disabled');
-         // --- MODIFICACIÓN ---
         if (menuContentOptions) {
             menuContentOptions.classList.remove('active');
         }
@@ -180,16 +177,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
+    
     function capitalize(s) {
         if (typeof s !== 'string') return '';
         // Handles kebab-case like 'privacy-policy'
         return s.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
     }
 
-
+    // --- Event Listeners ---
     buttons.forEach(button => {
         button.addEventListener('click', function(event) {
+            // ... (la lógica de los botones permanece igual)
             event.stopPropagation();
             const action = this.getAttribute('data-action');
 
@@ -261,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.addEventListener('click', function(event) {
+        // ... (la lógica de cierre de módulos al hacer clic fuera permanece igual)
         const activeModuleOptions = document.querySelector('.module-content[data-module="moduleOptions"].active');
         const activeButtonOptions = document.querySelector('.header-button[data-action="toggleModuleOptions"]');
         const activeModuleSurface = document.querySelector('.module-content[data-module="moduleSurface"].active');
@@ -280,73 +279,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-    // --- Drag for Mobile ---
-    if (moduleOptions && menuContentOptions) {
-        const dragHandle = moduleOptions.querySelector('.drag-handle');
-        let isDragging = false,
-            startY, currentY;
-
-        function dragStart(e) {
-            if (isAnimating || !moduleOptions.classList.contains('active')) return;
-            isDragging = true;
-            startY = e.pageY || e.touches[0].pageY;
-            menuContentOptions.style.transition = 'none';
-        }
-
-        function dragging(e) {
-            if (!isDragging) return;
-            currentY = e.pageY || e.touches[0].pageY;
-            const diffY = currentY - startY;
-            if (diffY > 0) {
-                menuContentOptions.style.transform = `translateY(${diffY}px)`;
-            }
-        }
-
-        function dragEnd() {
-            if (!isDragging) return;
-            isDragging = false;
-            menuContentOptions.style.transition = 'transform 0.3s ease-out';
-            const dragDistance = currentY - startY;
-            if (dragDistance > menuContentOptions.offsetHeight * 0.4) {
-                closeMenuOptionsMobile();
-            } else {
-                menuContentOptions.style.transform = 'translateY(0)';
-                menuContentOptions.addEventListener('transitionend', () => {
-                    menuContentOptions.removeAttribute('style');
-                }, {
-                    once: true
-                });
-            }
-        }
-
-        if (dragHandle) {
-            dragHandle.addEventListener('mousedown', dragStart);
-            dragHandle.addEventListener('touchstart', dragStart, {
-                passive: true
-            });
-        }
-        document.addEventListener('mousemove', dragging);
-        document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('touchmove', dragging);
-        document.addEventListener('touchend', dragEnd);
-
-        moduleOptions.addEventListener('click', function(event) {
-            if (event.target === moduleOptions) {
-                closeMenuOptions();
-            }
-        });
-    }
-    
-    // --- INICIO DE LA MODIFICACIÓN ---
-    // --- Resize handler para mantener el estado del menú sin animaciones ---
+    // --- Resize handler ---
     let resizeTimer;
     window.addEventListener('resize', () => {
         document.body.classList.add('no-transition');
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             document.body.classList.remove('no-transition');
-        }, 100); // Se quita la clase después de 100ms para re-habilitar las transiciones
+        }, 100);
     });
-    // --- FIN DE LA MODIFICACIÓN ---
-});
+}
+
+export { initMainController };
