@@ -1,4 +1,14 @@
+import {
+    initUrlManager,
+    navigateToUrl,
+    setupPopStateHandler,
+    setInitialHistoryState
+} from './url-manager.js';
+
 document.addEventListener('DOMContentLoaded', function() {
+    initUrlManager();
+    setInitialHistoryState();
+
     let allowMultipleActiveModules = false;
     let enableCloseWithEscape = true;
     let isAnimating = false;
@@ -8,8 +18,73 @@ document.addEventListener('DOMContentLoaded', function() {
     const moduleOptions = document.querySelector('[data-module="moduleOptions"]');
     const menuContentOptions = moduleOptions ? moduleOptions.querySelector('.menu-content') : null;
 
-    // --- FUNCIONES DE CONTROL DEL MENÚ DE OPCIONES (PC vs Mobile) ---
+    // --- URL and State Management ---
 
+    setupPopStateHandler((state) => {
+        if (state) {
+            handleNavigation(state.section, state.subsection, false);
+        }
+    });
+
+    function handleNavigation(section, subsection, updateHistory = true) {
+        // Deactivate all wrappers and sections
+        document.querySelectorAll('.section-wrapper, .section-container').forEach(el => {
+            el.classList.remove('active');
+            el.classList.add('disabled');
+        });
+
+        // Deactivate all menu links
+        document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
+
+        let targetWrapper, targetSection, activeMenu;
+
+        if (section === 'settings') {
+            targetWrapper = document.querySelector('[data-wrapper="wrapperSettings"]');
+            targetSection = document.querySelector(`[data-section="section${capitalize(subsection)}"]`);
+            activeMenu = document.querySelector(`[data-menu-list="settings"] [data-action="toggleSection${capitalize(subsection)}"]`);
+            showMenuList('settings');
+        } else if (section === 'help') {
+            targetWrapper = document.querySelector('[data-wrapper="wrapperHelp"]');
+            targetSection = document.querySelector(`[data-section="section${capitalize(subsection)}"]`);
+            activeMenu = document.querySelector(`[data-menu-list="help"] [data-action="toggleSection${capitalize(subsection)}"]`);
+            showMenuList('help');
+        } else {
+            targetWrapper = document.querySelector('[data-wrapper="wrapperMain"]');
+            targetSection = document.querySelector(`[data-section="section${capitalize(section)}"]`);
+            activeMenu = document.querySelector(`[data-menu-list="main"] [data-action="toggleSection${capitalize(section)}"]`);
+            showMenuList('main');
+        }
+
+        if (targetWrapper) {
+            targetWrapper.classList.remove('disabled');
+            targetWrapper.classList.add('active');
+        }
+        if (targetSection) {
+            targetSection.classList.remove('disabled');
+            targetSection.classList.add('active');
+        }
+        if (activeMenu) {
+            activeMenu.classList.add('active');
+        }
+
+        if (updateHistory) {
+            navigateToUrl(section, subsection);
+        }
+        closeAllActiveModules();
+    }
+
+    function showMenuList(menuName) {
+        document.querySelectorAll('[data-menu-list]').forEach(menu => {
+            menu.classList.add('disabled');
+        });
+        const menuToShow = document.querySelector(`[data-menu-list="${menuName}"]`);
+        if (menuToShow) {
+            menuToShow.classList.remove('disabled');
+        }
+    }
+
+
+    // --- Module Controls (Mobile vs PC) ---
     function openMenuOptions() {
         if (window.innerWidth <= 468) {
             openMenuOptionsMobile();
@@ -57,15 +132,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 moduleOptions.classList.remove('fade-in');
                 isAnimating = false;
             }
-        }, { once: true });
+        }, {
+            once: true
+        });
     }
 
     function closeMenuOptionsMobile() {
         if (isAnimating || !moduleOptions.classList.contains('active')) return;
         isAnimating = true;
-        
-        menuContentOptions.removeAttribute('style');
 
+        menuContentOptions.removeAttribute('style');
         moduleOptions.classList.remove('fade-in');
         moduleOptions.classList.add('fade-out');
         menuContentOptions.classList.remove('active');
@@ -77,11 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 menuContentOptions.classList.add('disabled');
                 isAnimating = false;
             }
-        }, { once: true });
+        }, {
+            once: true
+        });
     }
 
-    // --- LÓGICA GENERAL DE MÓDULOS Y SECCIONES ---
-
+    // --- General Logic ---
     function closeAllActiveModules(excludeModule = null) {
         modules.forEach(m => {
             if (m !== excludeModule && m.classList.contains('active')) {
@@ -95,97 +172,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function capitalize(s) {
+        if (typeof s !== 'string') return '';
+        // Handles kebab-case like 'privacy-policy'
+        return s.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+    }
+
+
     buttons.forEach(button => {
         button.addEventListener('click', function(event) {
             event.stopPropagation();
             const action = this.getAttribute('data-action');
-            
-            // Lógica para ir a la sección de Ajustes
+
             if (action === 'toggleSettings') {
-                const wrappers = document.querySelectorAll('.section-wrapper');
-                const menus = document.querySelectorAll('[data-menu-list]');
-
-                wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
-                document.querySelector('[data-wrapper="wrapperSettings"]').classList.add('active');
-                document.querySelector('[data-wrapper="wrapperSettings"]').classList.remove('disabled');
-
-                menus.forEach(m => m.classList.add('disabled'));
-                document.querySelector('[data-menu-list="settings"]').classList.remove('disabled');
-                
-                // Reinicia el estado del menú y las secciones de configuración
-                const menuSettings = document.querySelector('[data-menu-list="settings"]');
-                const wrapperSettings = document.querySelector('[data-wrapper="wrapperSettings"]');
-                menuSettings.querySelector('[data-action="toggleSectionAccessibility"]').click();
-
-                closeAllActiveModules();
+                handleNavigation('settings', 'accessibility');
                 return;
             }
-            
-            // Lógica para ir a la sección de Ayuda y Recursos
+
             if (action === 'toggleHelp') {
-                const wrappers = document.querySelectorAll('.section-wrapper');
-                const menus = document.querySelectorAll('[data-menu-list]');
-
-                wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
-                document.querySelector('[data-wrapper="wrapperHelp"]').classList.add('active');
-                document.querySelector('[data-wrapper="wrapperHelp"]').classList.remove('disabled');
-
-                menus.forEach(m => m.classList.add('disabled'));
-                document.querySelector('[data-menu-list="help"]').classList.remove('disabled');
-
-                // Reinicia el estado del menú y las secciones de ayuda
-                const menuHelp = document.querySelector('[data-menu-list="help"]');
-                menuHelp.querySelector('[data-action="toggleSectionPrivacyPolicy"]').click();
-
-                closeAllActiveModules();
+                handleNavigation('help', 'privacy-policy');
                 return;
             }
 
-            // Lógica para cambiar entre secciones
             if (action.startsWith('toggleSection')) {
-                let sectionName = action.replace('toggle', ''); // "SectionHome"
-                sectionName = sectionName.charAt(0).toLowerCase() + sectionName.slice(1);
+                const sectionName = action.replace('toggleSection', '').toLowerCase();
+                const mainSections = ['home', 'explore', 'trash'];
+                const settingsSubsections = ['accessibility', 'privacy'];
+                const helpSubsections = ['privacypolicy', 'terms', 'cookies', 'feedback'];
 
-                // Si se hace clic en "Volver a inicio" o "Pagina principal"
-                if (sectionName === 'sectionHome') {
-                    const wrappers = document.querySelectorAll('.section-wrapper');
-                    const menus = document.querySelectorAll('[data-menu-list]');
-
-                    wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
-                    document.querySelector('[data-wrapper="wrapperMain"]').classList.add('active');
-                    document.querySelector('[data-wrapper="wrapperMain"]').classList.remove('disabled');
-
-                    menus.forEach(m => m.classList.add('disabled'));
-                    document.querySelector('[data-menu-list="main"]').classList.remove('disabled');
+                if (mainSections.includes(sectionName)) {
+                    handleNavigation(sectionName, null);
+                } else if (settingsSubsections.includes(sectionName)) {
+                    handleNavigation('settings', sectionName);
+                } else if (helpSubsections.includes(sectionName)) {
+                    const subsection = sectionName === 'privacypolicy' ? 'privacy-policy' : sectionName;
+                    handleNavigation('help', subsection);
                 }
-
-                // *** INICIO DE LA CORRECCIÓN DEL BUG ***
-                const links = this.closest('.menu-list').querySelectorAll('.menu-link');
-                const targetSection = document.querySelector(`.section-container[data-section="${sectionName}"]`);
-                
-                if (targetSection) {
-                    const parentWrapper = targetSection.closest('.section-wrapper');
-                    const sectionsInWrapper = parentWrapper.querySelectorAll('.section-container');
-
-                    // Desactiva todas las secciones en el contenedor correcto
-                    sectionsInWrapper.forEach(s => {
-                        s.classList.remove('active');
-                        s.classList.add('disabled');
-                    });
-                    
-                    // Desactiva todos los links en el menú actual
-                    links.forEach(l => l.classList.remove('active'));
-
-                    // Activa la sección y el link correctos
-                    targetSection.classList.add('active');
-                    targetSection.classList.remove('disabled');
-                    this.classList.add('active');
-                }
-                // *** FIN DE LA CORRECCIÓN DEL BUG ***
                 return;
             }
 
-            // Lógica existente para los módulos
+
             let moduleName;
             if (action === 'toggleModuleOptions') {
                 moduleName = 'moduleOptions';
@@ -224,11 +250,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === "Escape") closeAllActiveModules();
         });
     }
-    
+
     document.addEventListener('click', function(event) {
         const activeModuleOptions = document.querySelector('.module-content[data-module="moduleOptions"].active');
         const activeButtonOptions = document.querySelector('.header-button[data-action="toggleModuleOptions"]');
-        
         const activeModuleSurface = document.querySelector('.module-content[data-module="moduleSurface"].active');
         const activeButtonSurface = document.querySelector('.header-button[data-action="toggleModuleSurface"]');
 
@@ -237,19 +262,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeMenuOptions();
             }
         }
-        
+
         if (activeModuleSurface && activeButtonSurface) {
-             if (!activeModuleSurface.contains(event.target) && !activeButtonSurface.contains(event.target)) {
+            if (!activeModuleSurface.contains(event.target) && !activeButtonSurface.contains(event.target)) {
                 activeModuleSurface.classList.remove('active');
                 activeModuleSurface.classList.add('disabled');
             }
         }
     });
 
-    // --- DRAG PARA MODULE OPTIONS (SOLO AFECTA MÓVILES) ---
+
+    // --- Drag for Mobile ---
     if (moduleOptions && menuContentOptions) {
         const dragHandle = moduleOptions.querySelector('.drag-handle');
-        let isDragging = false, startY, currentY;
+        let isDragging = false,
+            startY, currentY;
 
         function dragStart(e) {
             if (isAnimating || !moduleOptions.classList.contains('active')) return;
@@ -271,28 +298,30 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!isDragging) return;
             isDragging = false;
             menuContentOptions.style.transition = 'transform 0.3s ease-out';
-            
             const dragDistance = currentY - startY;
-            
             if (dragDistance > menuContentOptions.offsetHeight * 0.4) {
                 closeMenuOptionsMobile();
             } else {
                 menuContentOptions.style.transform = 'translateY(0)';
                 menuContentOptions.addEventListener('transitionend', () => {
-                   menuContentOptions.removeAttribute('style');
-                }, { once: true });
+                    menuContentOptions.removeAttribute('style');
+                }, {
+                    once: true
+                });
             }
         }
 
         if (dragHandle) {
             dragHandle.addEventListener('mousedown', dragStart);
-            dragHandle.addEventListener('touchstart', dragStart, { passive: true });
+            dragHandle.addEventListener('touchstart', dragStart, {
+                passive: true
+            });
         }
         document.addEventListener('mousemove', dragging);
         document.addEventListener('mouseup', dragEnd);
         document.addEventListener('touchmove', dragging);
         document.addEventListener('touchend', dragEnd);
-        
+
         moduleOptions.addEventListener('click', function(event) {
             if (event.target === moduleOptions) {
                 closeMenuOptions();
