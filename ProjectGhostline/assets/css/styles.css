@@ -12,7 +12,7 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    font-family: "Roboto", sans-serif;
+    font-family: "Roboto Condensed", sans-serif;
 }
 
 html,
@@ -86,9 +86,6 @@ body {
 .general-content-scrolleable {
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    display: flex;
-    justify-content: center;
 }
 
 .header {
@@ -233,17 +230,6 @@ body {
     background-color: #f5f5fa;
 }
 
-.module-surface .menu-list[data-menu-list="main"] {
-    justify-content: space-between;
-    height: 100%;
-}
-
-.menu-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
 .disabled {
     display: none;
 }
@@ -269,6 +255,7 @@ body {
     cursor: pointer;
 }
 
+/* --- Keyframes para el fondo/overlay --- */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -298,7 +285,7 @@ body {
         top: 0;
         left: 0;
         z-index: 999;
-        justify-content: flex-end;
+        justify-content: flex-end; /* Alinea el menu-content abajo */
         align-items: center;
         flex-direction: column;
         width: 100%;
@@ -315,6 +302,7 @@ body {
         transition: transform 0.3s ease-out;
     }
 
+    /* Clase 'active' para el contenido del menú, controla la animación de deslizamiento */
     .module-options .menu-content.active {
         transform: translateY(0);
     }
@@ -336,10 +324,12 @@ body {
     background-color: #f5f5fa;
 }
 
+/* --- INICIO DE LA MODIFICACIÓN --- */
+/* Clase de ayuda para desactivar transiciones durante el resize */
 .no-transition * {
     transition: none !important;
 }
-
+/* --- FIN DE LA MODIFICACIÓN --- */
 /* ================================================= */
 /* ===== INICIO: ESTILOS SECCIÓN ACCESIBILIDAD ===== */
 /* ================================================= */
@@ -387,9 +377,14 @@ body {
     align-items: flex-start;
 }
 
-.settings-card--vertical .selector-container {
+/* AÑADIDO: Hace que el contenedor del interruptor o selector ocupe todo el ancho en tarjetas verticales */
+.settings-card--vertical .selector-container,
+.settings-card--vertical .settings-card-right {
     width: 100%;
     margin-top: 16px;
+}
+
+.settings-card--vertical .selector-container {
     max-width: 320px; 
 }
 
@@ -398,6 +393,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    width: 100%; /* AÑADIDO: Ocupa todo el ancho */
 }
 
 .settings-card-title {
@@ -414,6 +410,8 @@ body {
 
 .settings-card-right {
     flex-shrink: 0;
+    display: flex; /* AÑADIDO: Permite alinear el contenido */
+    justify-content: flex-end; /* AÑADIDO: Alinea el interruptor a la derecha */
 }
 
 /* --- ESTILOS PARA SELECTOR Y SWITCH --- */
@@ -434,18 +432,16 @@ body {
     color: #3c4043;
     text-align: left;
     width: 100%;
-    outline: none; /* Quitamos el outline por defecto para personalizarlo */
+    outline: none;
 }
 
 .selector-button:hover {
     border-color: #000000;
 }
 
-/* INICIO: Nuevo estilo para el borde en foco */
 .selector-button:focus {
     border-color: #000000;
 }
-/* FIN: Nuevo estilo para el borde en foco */
 
 .selector-button span:nth-child(2) {
     flex-grow: 1;

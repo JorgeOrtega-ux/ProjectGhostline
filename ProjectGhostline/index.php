@@ -168,7 +168,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="settings-card">
+                                    <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-left">
                                             <span class="settings-card-title">Los atajos necesitan un modificador</span>
                                             <span class="settings-card-description">Para crear atajos, es necesario usar la tecla modificadora Alt.</span>
@@ -180,7 +180,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="settings-card">
+                                    <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-left">
                                             <span class="settings-card-title">Contraste alto de colores</span>
                                             <span class="settings-card-description">Se mantiene un mayor contraste entre el texto y el fondo, incluidos los fondos con degradados.</span>
@@ -192,7 +192,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </label>
                                         </div>
                                     </div>
-                                </div>
+                                    </div>
                             </div>
                             <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacy">Sección de Privacidad</div>
                         </div>
