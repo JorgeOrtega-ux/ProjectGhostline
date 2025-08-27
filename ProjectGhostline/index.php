@@ -130,7 +130,70 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                             <div class="section-container <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : 'disabled'; ?>" data-section="sectionTrash">Trash Section</div>
                         </div>
                         <div class="section-wrapper <?php echo $isSettingsMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperSettings">
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : 'disabled'; ?>" data-section="sectionAccessibility">Sección de Accesibilidad</div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : 'disabled'; ?>" data-section="sectionAccessibility">
+                                <div class="settings-section">
+                                    <div class="settings-header">
+                                        <h2>Accesibilidad</h2>
+                                        <p>Configura las opciones de accesibilidad para adaptar la interfaz a tus necesidades.</p>
+                                    </div>
+                                    
+                                    <div class="settings-card settings-card--vertical">
+                                        <div class="settings-card-content">
+                                            <span class="settings-card-title">Tema</span>
+                                            <span class="settings-card-description">Personaliza la apariencia de tu cuenta. Selecciona un tema o sincroniza con tu sistema.</span>
+                                        </div>
+                                        <div class="selector-container">
+                                            <button class="selector-button" data-action="toggleModuleSelector">
+                                                <span class="material-symbols-rounded">sync</span>
+                                                <span>Sincronizar con el sistema</span>
+                                                <span class="material-symbols-rounded">expand_more</span>
+                                            </button>
+                                            <div class="module-content module-selector disabled" data-module="moduleSelector">
+                                                <div class="menu-content">
+                                                    <div class="menu-list">
+                                                        <div class="menu-link active">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">sync</span></div>
+                                                            <div class="menu-link-text"><span>Sincronizar con el sistema</span></div>
+                                                        </div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">light_mode</span></div>
+                                                            <div class="menu-link-text"><span>Claro</span></div>
+                                                        </div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">dark_mode</span></div>
+                                                            <div class="menu-link-text"><span>Oscuro</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-card">
+                                        <div class="settings-card-left">
+                                            <span class="settings-card-title">Los atajos necesitan un modificador</span>
+                                            <span class="settings-card-description">Para crear atajos, es necesario usar la tecla modificadora Alt.</span>
+                                        </div>
+                                        <div class="settings-card-right">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="settings-card">
+                                        <div class="settings-card-left">
+                                            <span class="settings-card-title">Contraste alto de colores</span>
+                                            <span class="settings-card-description">Se mantiene un mayor contraste entre el texto y el fondo, incluidos los fondos con degradados.</span>
+                                        </div>
+                                        <div class="settings-card-right">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacy">Sección de Privacidad</div>
                         </div>
                         <div class="section-wrapper <?php echo $isHelpMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperHelp">

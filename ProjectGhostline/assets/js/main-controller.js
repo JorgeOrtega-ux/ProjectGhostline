@@ -168,16 +168,22 @@ function initMainController() {
     function closeAllActiveModules(excludeModule = null) {
         modules.forEach(m => {
             if (m !== excludeModule && m.classList.contains('active')) {
-                if (m.dataset.module === 'moduleOptions') {
-                    closeMenuOptions();
-                } else {
-                    m.classList.remove('active');
-                    m.classList.add('disabled');
+                m.classList.remove('active');
+                m.classList.add('disabled');
+                
+                // INICIO: Lógica para rotar flecha al cerrar
+                if (m.dataset.module === 'moduleSelector') {
+                    const selectorButton = document.querySelector('[data-action="toggleModuleSelector"]');
+                    const arrowIcon = selectorButton.querySelector('.material-symbols-rounded:last-child');
+                    if (arrowIcon) {
+                        arrowIcon.classList.remove('arrow-rotated');
+                    }
                 }
+                // FIN: Lógica para rotar flecha al cerrar
             }
         });
     }
-    
+
     function capitalize(s) {
         if (typeof s !== 'string') return '';
         // Handles kebab-case like 'privacy-policy'
@@ -187,7 +193,6 @@ function initMainController() {
     // --- Event Listeners ---
     buttons.forEach(button => {
         button.addEventListener('click', function(event) {
-            // ... (la lógica de los botones permanece igual)
             event.stopPropagation();
             const action = this.getAttribute('data-action');
 
@@ -218,12 +223,13 @@ function initMainController() {
                 return;
             }
 
-
             let moduleName;
             if (action === 'toggleModuleOptions') {
                 moduleName = 'moduleOptions';
             } else if (action === 'toggleModuleSurface') {
                 moduleName = 'moduleSurface';
+            } else if (action === 'toggleModuleSelector') {
+                moduleName = 'moduleSelector';
             }
 
             if (!moduleName) return;
@@ -232,26 +238,50 @@ function initMainController() {
             if (!targetModule) return;
 
             const isTargetActive = targetModule.classList.contains('active');
-            closeAllActiveModules(isTargetActive ? null : targetModule);
+            
+            if (!allowMultipleActiveModules) {
+                 closeAllActiveModules(isTargetActive ? null : targetModule);
+            }
+
+            // INICIO: Lógica para rotar la flecha
+            if (moduleName === 'moduleSelector') {
+                const arrowIcon = this.querySelector('.material-symbols-rounded:last-child');
+                if (arrowIcon) {
+                    arrowIcon.classList.toggle('arrow-rotated', !isTargetActive);
+                }
+            }
+            // FIN: Lógica para rotar la flecha
 
             if (isTargetActive) {
-                if (targetModule.dataset.module === 'moduleOptions') {
-                    closeMenuOptions();
-                } else {
-                    targetModule.classList.remove('active');
-                    targetModule.classList.add('disabled');
-                }
+                targetModule.classList.remove('active');
+                targetModule.classList.add('disabled');
             } else {
-                if (targetModule.dataset.module === 'moduleOptions') {
-                    openMenuOptions();
-                } else {
-                    targetModule.classList.remove('disabled');
-                    targetModule.classList.add('active');
-                }
+                targetModule.classList.remove('disabled');
+                targetModule.classList.add('active');
             }
         });
     });
 
+    const moduleSelector = document.querySelector('[data-module="moduleSelector"]');
+    if (moduleSelector) {
+        const selectorButton = document.querySelector('[data-action="toggleModuleSelector"]');
+        const options = moduleSelector.querySelectorAll('.menu-link');
+
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                const icon = this.querySelector('.menu-link-icon').innerHTML;
+                const text = this.querySelector('.menu-link-text span').textContent;
+                selectorButton.querySelector('.material-symbols-rounded:first-child').innerHTML = icon;
+                selectorButton.querySelector('span:nth-child(2)').textContent = text;
+                
+                options.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                closeAllActiveModules(); // Cierra todos los módulos, incluyendo el selector
+            });
+        });
+    }
+    
     if (enableCloseWithEscape) {
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") closeAllActiveModules();
@@ -259,27 +289,17 @@ function initMainController() {
     }
 
     document.addEventListener('click', function(event) {
-        // ... (la lógica de cierre de módulos al hacer clic fuera permanece igual)
-        const activeModuleOptions = document.querySelector('.module-content[data-module="moduleOptions"].active');
-        const activeButtonOptions = document.querySelector('.header-button[data-action="toggleModuleOptions"]');
-        const activeModuleSurface = document.querySelector('.module-content[data-module="moduleSurface"].active');
-        const activeButtonSurface = document.querySelector('.header-button[data-action="toggleModuleSurface"]');
-
-        if (activeModuleOptions && activeButtonOptions) {
-            if (!activeModuleOptions.contains(event.target) && !activeButtonOptions.contains(event.target)) {
-                closeMenuOptions();
+        const activeModules = document.querySelectorAll('.module-content.active');
+        activeModules.forEach(activeModule => {
+            const moduleName = activeModule.dataset.module;
+            const correspondingButton = document.querySelector(`[data-action="toggle${capitalize(moduleName)}"]`);
+            
+            if (correspondingButton && !activeModule.contains(event.target) && !correspondingButton.contains(event.target)) {
+                 closeAllActiveModules();
             }
-        }
-
-        if (activeModuleSurface && activeButtonSurface) {
-            if (!activeModuleSurface.contains(event.target) && !activeButtonSurface.contains(event.target)) {
-                activeModuleSurface.classList.remove('active');
-                activeModuleSurface.classList.add('disabled');
-            }
-        }
+        });
     });
 
-    // --- Resize handler ---
     let resizeTimer;
     window.addEventListener('resize', () => {
         document.body.classList.add('no-transition');
