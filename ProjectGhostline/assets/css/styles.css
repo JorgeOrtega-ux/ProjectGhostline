@@ -392,14 +392,14 @@ body {
 }
 
 /* AÑADIDO: Hace que el contenedor del interruptor o selector ocupe todo el ancho en tarjetas verticales */
-.settings-card--vertical .selector-container,
 .settings-card--vertical .settings-card-right {
     width: 100%;
     margin-top: 16px;
 }
 
 .settings-card--vertical .selector-container {
-    max-width: 320px; 
+    width: 285px; /* MODIFICADO */
+    margin-top: 16px;
 }
 
 
@@ -446,6 +446,7 @@ body {
     color: #3c4043;
     text-align: left;
     width: 100%;
+    height: 40px;
     outline: none;
 }
 
@@ -489,8 +490,8 @@ body {
 .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 36px;
-    height: 20px;
+    width: 45px;
+    height: 24px;
 }
 
 .toggle-switch input {
@@ -514,8 +515,8 @@ body {
 .toggle-switch .slider:before {
     position: absolute;
     content: "";
-    height: 16px;
-    width: 16px;
+    height: 20px;
+    width: 20px;
     left: 2px;
     bottom: 2px;
     background-color: white;
@@ -529,7 +530,7 @@ body {
 }
 
 .toggle-switch input:checked + .slider:before {
-    transform: translateX(16px);
+    transform: translateX(21px);
     background-color: #ffffff;
 }
 /* =============================================== */
