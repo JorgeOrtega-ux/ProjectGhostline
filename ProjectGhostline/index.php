@@ -68,17 +68,21 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                     <div class="module-content module-surface disabled" data-module="moduleSurface">
                         <div class="menu-content">
                             <div class="menu-list <?php echo $isMainMenu ? '' : 'disabled'; ?>" data-menu-list="main">
-                                <div class="menu-link <?php echo ($CURRENT_SECTION === 'home') ? 'active' : ''; ?>" data-action="toggleSectionHome">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">home</span></div>
-                                    <div class="menu-link-text"><span>Pagina principal</span></div>
+                                <div class="menu-group menu-group-top">
+                                    <div class="menu-link <?php echo ($CURRENT_SECTION === 'home') ? 'active' : ''; ?>" data-action="toggleSectionHome">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">home</span></div>
+                                        <div class="menu-link-text"><span>Pagina principal</span></div>
+                                    </div>
+                                    <div class="menu-link <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : ''; ?>" data-action="toggleSectionExplore">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">folder</span></div>
+                                        <div class="menu-link-text"><span>Explorar colecciones</span></div>
+                                    </div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : ''; ?>" data-action="toggleSectionExplore">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">folder</span></div>
-                                    <div class="menu-link-text"><span>Explorar colecciones</span></div>
-                                </div>
-                                <div class="menu-link <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : ''; ?>" data-action="toggleSectionTrash">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">delete</span></div>
-                                    <div class="menu-link-text"><span>Papelera de reciclaje</span></div>
+                                <div class="menu-group menu-group-bottom">
+                                    <div class="menu-link <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : ''; ?>" data-action="toggleSectionTrash">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">delete</span></div>
+                                        <div class="menu-link-text"><span>Papelera de reciclaje</span></div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="menu-list <?php echo $isSettingsMenu ? '' : 'disabled'; ?>" data-menu-list="settings">

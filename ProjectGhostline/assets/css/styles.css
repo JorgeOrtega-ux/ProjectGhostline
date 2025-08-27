@@ -230,6 +230,19 @@ body {
     background-color: #f5f5fa;
 }
 
+/* --- INICIO DE LA MODIFICACIÓN --- */
+.module-surface .menu-list[data-menu-list="main"] {
+    justify-content: space-between;
+    height: 100%;
+}
+
+.menu-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Mantiene el espaciado entre los links del mismo grupo */
+}
+/* --- FIN DE LA MODIFICACIÓN --- */
+
 .disabled {
     display: none;
 }
@@ -324,9 +337,7 @@ body {
     background-color: #f5f5fa;
 }
 
-/* --- INICIO DE LA MODIFICACIÓN --- */
 /* Clase de ayuda para desactivar transiciones durante el resize */
 .no-transition * {
     transition: none !important;
 }
-/* --- FIN DE LA MODIFICACIÓN --- */
