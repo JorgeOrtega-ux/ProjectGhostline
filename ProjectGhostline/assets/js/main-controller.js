@@ -106,12 +106,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!allowMultipleActiveModules) closeAllActiveModules();
         moduleOptions.classList.remove('disabled');
         moduleOptions.classList.add('active');
+        // --- MODIFICACIÓN ---
+        // Aseguramos que el contenido del menú esté visible en PC
+        if (menuContentOptions) {
+            menuContentOptions.classList.add('active');
+        }
     }
 
     function closeMenuOptionsPC() {
         if (!moduleOptions.classList.contains('active')) return;
         moduleOptions.classList.remove('active');
         moduleOptions.classList.add('disabled');
+         // --- MODIFICACIÓN ---
+        if (menuContentOptions) {
+            menuContentOptions.classList.remove('active');
+        }
     }
 
     function openMenuOptionsMobile() {
@@ -328,4 +337,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // --- INICIO DE LA MODIFICACIÓN ---
+    // --- Resize handler para mantener el estado del menú sin animaciones ---
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        document.body.classList.add('no-transition');
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            document.body.classList.remove('no-transition');
+        }, 100); // Se quita la clase después de 100ms para re-habilitar las transiciones
+    });
+    // --- FIN DE LA MODIFICACIÓN ---
 });
