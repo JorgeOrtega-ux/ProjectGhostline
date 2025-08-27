@@ -170,7 +170,6 @@ function initMainController() {
                     m.classList.remove('active');
                     m.classList.add('disabled');
                 }
-                // Si el módulo es un selector, también quita la rotación de la flecha
                 if (m.dataset.module === 'moduleSelector') {
                     const container = m.closest('.selector-container');
                     if (container) {
@@ -189,9 +188,8 @@ function initMainController() {
         if (typeof s !== 'string') return '';
         return s.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
     }
-
-    // --- MODIFICACIÓN AQUÍ ---
-    // Función específica para manejar el selector
+    
+    // --- INICIO DE LA MODIFICACIÓN ---
     function toggleModuleSelector(button) {
         const container = button.closest('.selector-container');
         if (!container) return;
@@ -201,20 +199,45 @@ function initMainController() {
 
         const isModuleActive = module.classList.contains('active');
         
-        // Cierra otros módulos antes de actuar sobre el actual
         closeAllActiveModules(isModuleActive ? null : module);
 
-        // Cambia el estado del módulo actual
         module.classList.toggle('disabled', isModuleActive);
         module.classList.toggle('active', !isModuleActive);
         
-        // Busca el ÚLTIMO ícono (la flecha) y lo rota
         const arrowIcon = button.querySelector('.material-symbols-rounded:last-child');
         if (arrowIcon) {
             arrowIcon.classList.toggle('arrow-rotated', !isModuleActive);
         }
+        
+        if (isModuleActive) {
+            button.blur();
+        }
     }
 
+    function handleSelectorChoice(selectedLink) {
+        const container = selectedLink.closest('.selector-container');
+        if (!container) return;
+    
+        const button = container.querySelector('.selector-button');
+        const module = container.querySelector('[data-module="moduleSelector"]');
+        const allLinks = module.querySelectorAll('.menu-link');
+    
+        // Update button content
+        const iconHTML = selectedLink.querySelector('.menu-link-icon').innerHTML;
+        const textHTML = selectedLink.querySelector('.menu-link-text').innerHTML;
+        const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
+    
+        button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+    
+        // Update active state
+        allLinks.forEach(link => link.classList.remove('active'));
+        selectedLink.classList.add('active');
+    
+        // Close selector
+        closeAllActiveModules();
+        button.blur();
+    }
+    // --- FIN DE LA MODIFICACIÓN ---
 
     // --- Event Listeners ---
     buttons.forEach(button => {
@@ -222,8 +245,6 @@ function initMainController() {
             event.stopPropagation();
             const action = this.getAttribute('data-action');
             
-            // --- MODIFICACIÓN AQUÍ ---
-            // Manejador para el selector de temas
             if (action === 'toggleModuleSelector') {
                 toggleModuleSelector(this);
                 return;
@@ -244,9 +265,7 @@ function initMainController() {
                 const sectionName = sectionNameRaw.toLowerCase();
                 const mainSections = ['home', 'explore', 'trash'];
                 const settingsSubsections = ['accessibility', 'privacy'];
-                // Corregido para manejar 'privacy-policy'
                 const helpSubsections = ['privacy-policy', 'terms', 'cookies', 'feedback'];
-                // Mapeo para casos especiales como 'PrivacyPolicy' a 'privacy-policy'
                 const subsectionMap = { 'privacypolicy': 'privacy-policy' };
                 const finalSubsection = subsectionMap[sectionName] || sectionName;
                 
@@ -293,6 +312,13 @@ function initMainController() {
         });
     });
 
+    // --- AÑADIDO: Event listener para las opciones del selector ---
+    document.querySelectorAll('[data-module="moduleSelector"] .menu-link').forEach(link => {
+        link.addEventListener('click', function() {
+            handleSelectorChoice(this);
+        });
+    });
+
     if (enableCloseWithEscape) {
         document.addEventListener('keydown', (e) => {
             if (e.key === "Escape") closeAllActiveModules();
@@ -303,16 +329,15 @@ function initMainController() {
         const activeModules = document.querySelectorAll('.module-content.active');
         activeModules.forEach(activeModule => {
             const moduleName = activeModule.dataset.module;
-            const actionName = 'toggle' + moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
-            const activeButton = document.querySelector(`[data-action="${actionName}"]`);
-
-            // Añadimos una excepción para el selector, ya que su botón puede variar
+            
             if (moduleName === 'moduleSelector') {
                  const container = activeModule.closest('.selector-container');
                  if(container && !container.contains(event.target)) {
                      closeAllActiveModules();
                  }
             } else {
+                 const actionName = 'toggle' + moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+                 const activeButton = document.querySelector(`[data-action="${actionName}"]`);
                  if (activeButton && !activeModule.contains(event.target) && !activeButton.contains(event.target)) {
                     closeAllActiveModules();
                 }

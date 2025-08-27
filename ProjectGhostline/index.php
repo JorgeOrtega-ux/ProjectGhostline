@@ -123,7 +123,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                             </div>
                         </div>
                     </div>
-                    <div class="general-content-scrolleable">
+                    <div class="general-content-scrolleable overflow-y">
                         <div class="section-wrapper <?php echo $isMainMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperMain">
                             <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome">Home Section</div>
                             <div class="section-container <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : 'disabled'; ?>" data-section="sectionExplore">Explore Section</div>
@@ -136,7 +136,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                         <h2>Accesibilidad</h2>
                                         <p>Configura las opciones de accesibilidad para adaptar la interfaz a tus necesidades.</p>
                                     </div>
-                                    
+
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-content">
                                             <span class="settings-card-title">Tema</span>
@@ -168,6 +168,46 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="settings-card settings-card--vertical">
+                                        <div class="settings-card-content">
+                                            <span class="settings-card-title">Idioma</span>
+                                            <span class="settings-card-description">Selecciona tu idioma de preferencia para la interfaz.</span>
+                                        </div>
+                                        <div class="selector-container">
+                                            <button class="selector-button" data-action="toggleModuleSelector">
+                                                <span class="material-symbols-rounded">language</span>
+                                                <span>Español (México)</span>
+                                                <span class="material-symbols-rounded">expand_more</span>
+                                            </button>
+                                            <div class="module-content module-selector disabled" data-module="moduleSelector">
+                                                <div class="menu-content">
+                                                    <div class="menu-list">
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-text"><span>English (United States)</span></div>
+                                                        </div>
+                                                        <div class="menu-link active">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-text"><span>Español (México)</span></div>
+                                                        </div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-text"><span>Français (France)</span></div>
+                                                        </div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-text"><span>Deutsch (Deutschland)</span></div>
+                                                        </div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-text"><span>Português (Brasil)</span></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-left">
                                             <span class="settings-card-title">Los atajos necesitan un modificador</span>
@@ -192,7 +232,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </label>
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
                             </div>
                             <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacy">Sección de Privacidad</div>
                         </div>
