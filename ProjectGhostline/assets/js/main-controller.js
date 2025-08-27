@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { once: true });
     }
 
-    // --- LÓGICA GENERAL DE MÓDULOS ---
+    // --- LÓGICA GENERAL DE MÓDULOS Y SECCIONES ---
 
     function closeAllActiveModules(excludeModule = null) {
         modules.forEach(m => {
@@ -99,16 +99,99 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(event) {
             event.stopPropagation();
             const action = this.getAttribute('data-action');
-            let moduleName;
+            
+            // Lógica para ir a la sección de Ajustes
+            if (action === 'toggleSettings') {
+                const wrappers = document.querySelectorAll('.section-wrapper');
+                const menus = document.querySelectorAll('[data-menu-list]');
 
-            // --- INICIO DE LA CORRECCIÓN ---
-            // Extrae el nombre del módulo correctamente desde la acción
+                wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
+                document.querySelector('[data-wrapper="wrapperSettings"]').classList.add('active');
+                document.querySelector('[data-wrapper="wrapperSettings"]').classList.remove('disabled');
+
+                menus.forEach(m => m.classList.add('disabled'));
+                document.querySelector('[data-menu-list="settings"]').classList.remove('disabled');
+                
+                // Reinicia el estado del menú y las secciones de configuración
+                const menuSettings = document.querySelector('[data-menu-list="settings"]');
+                const wrapperSettings = document.querySelector('[data-wrapper="wrapperSettings"]');
+                menuSettings.querySelector('[data-action="toggleSectionAccessibility"]').click();
+
+                closeAllActiveModules();
+                return;
+            }
+            
+            // Lógica para ir a la sección de Ayuda y Recursos
+            if (action === 'toggleHelp') {
+                const wrappers = document.querySelectorAll('.section-wrapper');
+                const menus = document.querySelectorAll('[data-menu-list]');
+
+                wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
+                document.querySelector('[data-wrapper="wrapperHelp"]').classList.add('active');
+                document.querySelector('[data-wrapper="wrapperHelp"]').classList.remove('disabled');
+
+                menus.forEach(m => m.classList.add('disabled'));
+                document.querySelector('[data-menu-list="help"]').classList.remove('disabled');
+
+                // Reinicia el estado del menú y las secciones de ayuda
+                const menuHelp = document.querySelector('[data-menu-list="help"]');
+                menuHelp.querySelector('[data-action="toggleSectionPrivacyPolicy"]').click();
+
+                closeAllActiveModules();
+                return;
+            }
+
+            // Lógica para cambiar entre secciones
+            if (action.startsWith('toggleSection')) {
+                let sectionName = action.replace('toggle', ''); // "SectionHome"
+                sectionName = sectionName.charAt(0).toLowerCase() + sectionName.slice(1);
+
+                // Si se hace clic en "Volver a inicio" o "Pagina principal"
+                if (sectionName === 'sectionHome') {
+                    const wrappers = document.querySelectorAll('.section-wrapper');
+                    const menus = document.querySelectorAll('[data-menu-list]');
+
+                    wrappers.forEach(w => { w.classList.remove('active'); w.classList.add('disabled'); });
+                    document.querySelector('[data-wrapper="wrapperMain"]').classList.add('active');
+                    document.querySelector('[data-wrapper="wrapperMain"]').classList.remove('disabled');
+
+                    menus.forEach(m => m.classList.add('disabled'));
+                    document.querySelector('[data-menu-list="main"]').classList.remove('disabled');
+                }
+
+                // *** INICIO DE LA CORRECCIÓN DEL BUG ***
+                const links = this.closest('.menu-list').querySelectorAll('.menu-link');
+                const targetSection = document.querySelector(`.section-container[data-section="${sectionName}"]`);
+                
+                if (targetSection) {
+                    const parentWrapper = targetSection.closest('.section-wrapper');
+                    const sectionsInWrapper = parentWrapper.querySelectorAll('.section-container');
+
+                    // Desactiva todas las secciones en el contenedor correcto
+                    sectionsInWrapper.forEach(s => {
+                        s.classList.remove('active');
+                        s.classList.add('disabled');
+                    });
+                    
+                    // Desactiva todos los links en el menú actual
+                    links.forEach(l => l.classList.remove('active'));
+
+                    // Activa la sección y el link correctos
+                    targetSection.classList.add('active');
+                    targetSection.classList.remove('disabled');
+                    this.classList.add('active');
+                }
+                // *** FIN DE LA CORRECCIÓN DEL BUG ***
+                return;
+            }
+
+            // Lógica existente para los módulos
+            let moduleName;
             if (action === 'toggleModuleOptions') {
                 moduleName = 'moduleOptions';
             } else if (action === 'toggleModuleSurface') {
                 moduleName = 'moduleSurface';
             }
-            // --- FIN DE LA CORRECCIÓN ---
 
             if (!moduleName) return;
 
@@ -116,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!targetModule) return;
 
             const isTargetActive = targetModule.classList.contains('active');
-
             closeAllActiveModules(isTargetActive ? null : targetModule);
 
             if (isTargetActive) {
