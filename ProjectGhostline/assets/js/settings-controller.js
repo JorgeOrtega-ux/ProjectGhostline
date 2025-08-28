@@ -18,13 +18,32 @@ function initSettingsController() {
     }
 
     function updateActiveThemeSelector(preference) {
+        let activeLink = null;
         themeSelectors.forEach(selector => {
             if (selector.dataset.themeValue === preference) {
                 selector.classList.add('active');
+                activeLink = selector;
             } else {
                 selector.classList.remove('active');
             }
         });
+
+        // --- INICIO DE LA MODIFICACIÓN ---
+        // Actualiza el botón principal del selector de tema para que muestre la selección actual.
+        if (activeLink) {
+            const container = activeLink.closest('.selector-container');
+            if (container) {
+                const button = container.querySelector('.selector-button');
+                if (button) {
+                    const iconHTML = activeLink.querySelector('.menu-link-icon').innerHTML;
+                    const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
+                    const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
+                    
+                    button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+                }
+            }
+        }
+        // --- FIN DE LA MODIFICACIÓN ---
     }
 
     function setTheme(preference) {
