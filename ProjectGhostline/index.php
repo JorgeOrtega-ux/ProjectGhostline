@@ -17,7 +17,6 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/assets/css/styles.css">
     <title>ProjectGhostline</title>
     
-    <!-- Script para prevenir flashes (FOUC) -->
     <script>
         (function() {
             // --- Prevenir flash de tema ---
@@ -37,25 +36,6 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                     htmlElement.classList.add('light-theme');
                 }
             }
-            
-            // --- Prevenir flash de contenido ---
-            // Ocultar el body hasta que todo esté cargado
-            document.documentElement.style.visibility = 'hidden';
-            
-            // Función para mostrar el contenido cuando esté listo
-            function showContent() {
-                document.documentElement.style.visibility = 'visible';
-            }
-            
-            // Mostrar contenido cuando el DOM esté listo
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', showContent);
-            } else {
-                showContent();
-            }
-            
-            // Failsafe: mostrar contenido después de 500ms máximo
-            setTimeout(showContent, 500);
         })();
     </script>
     
@@ -204,11 +184,11 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                                         </div>
                                                         <div class="menu-link">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">light_mode</span></div>
-                                                            <div class="menu-link-text"><span>Claro</span></div>
+                                                            <div class="menu-link-text"><span>Tema Claro</span></div>
                                                         </div>
                                                         <div class="menu-link">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">dark_mode</span></div>
-                                                            <div class="menu-link-text"><span>Oscuro</span></div>
+                                                            <div class="menu-link-text"><span>Tema Oscuro</span></div>
                                                         </div>
                                                     </div>
                                                 </div>

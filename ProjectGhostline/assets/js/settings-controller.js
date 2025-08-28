@@ -11,9 +11,9 @@ function initSettingsController() {
     function updateThemeSelectorUI(theme) {
         let activeLink;
         if (theme === 'light') {
-            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Claro'));
+            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Tema Claro'));
         } else if (theme === 'dark') {
-            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Oscuro'));
+            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Tema Oscuro'));
         } else { // 'sync'
             activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Sincronizar'));
         }
