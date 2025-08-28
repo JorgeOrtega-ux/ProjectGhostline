@@ -145,6 +145,39 @@ function initSettingsController() {
             setLanguage('en');
         }
     }
+
+    // --- Open Links Management ---
+    const openLinksToggle = document.getElementById('openLinksInNewTabToggle');
+
+    function applyOpenLinksSetting() {
+        const savedState = localStorage.getItem('openLinksInNewTab') || 'true';
+        openLinksToggle.checked = savedState === 'true';
+    }
+
+    function saveOpenLinksSetting() {
+        localStorage.setItem('openLinksInNewTab', openLinksToggle.checked);
+    }
+
+    applyOpenLinksSetting();
+    openLinksToggle.addEventListener('change', saveOpenLinksSetting);
+    
+    // --- INICIO DE LA MODIFICACIÓN: Log de configuración inicial ---
+    function logInitialSettings() {
+        const theme = localStorage.getItem('theme') || 'sync';
+        const language = localStorage.getItem('language') || 'auto';
+        const openLinks = localStorage.getItem('openLinksInNewTab') || 'true';
+
+        console.log("=========================================");
+        console.log(" Ghostline Settings Loaded");
+        console.log("=========================================");
+        console.log(`🎨 Tema: ${theme}`);
+        console.log(`🌐 Idioma: ${language}`);
+        console.log(`🔗 Abrir enlaces en nueva pestaña: ${openLinks}`);
+        console.log("=========================================");
+    }
+
+    logInitialSettings();
+    // --- FIN DE LA MODIFICACIÓN ---
 }
 
 export { initSettingsController };

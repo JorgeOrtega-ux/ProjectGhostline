@@ -16,13 +16,13 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/assets/css/styles.css">
     <title>ProjectGhostline</title>
-    
+
     <script>
         (function() {
             // --- Prevenir flash de tema ---
             const savedTheme = localStorage.getItem('theme') || 'sync';
             const htmlElement = document.documentElement;
-            
+
             if (savedTheme === 'light') {
                 htmlElement.classList.add('light-theme');
             } else if (savedTheme === 'dark') {
@@ -36,9 +36,10 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                     htmlElement.classList.add('light-theme');
                 }
             }
+
         })();
     </script>
-    
+
     <script>
         window.PROJECT_CONFIG = {
             baseUrl: '<?php echo $BASE_URL; ?>',
@@ -236,24 +237,12 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                     </div>
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-left">
-                                            <span class="settings-card-title">Los atajos necesitan un modificador</span>
-                                            <span class="settings-card-description">Para crear atajos, es necesario usar la tecla modificadora Alt.</span>
+                                            <span class="settings-card-title">Abrir enlaces en una pestaña nueva</span>
+                                            <span class="settings-card-description">En el navegador web, los enlaces siempre se abrirán en una pestaña nueva.</span>
                                         </div>
                                         <div class="settings-card-right">
                                             <label class="toggle-switch">
-                                                <input type="checkbox" checked>
-                                                <span class="slider"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="settings-card settings-card--vertical">
-                                        <div class="settings-card-left">
-                                            <span class="settings-card-title">Contraste alto de colores</span>
-                                            <span class="settings-card-description">Se mantiene un mayor contraste entre el texto y el fondo, incluidos los fondos con degradados.</span>
-                                        </div>
-                                        <div class="settings-card-right">
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" checked>
+                                                <input type="checkbox" id="openLinksInNewTabToggle" checked>
                                                 <span class="slider"></span>
                                             </label>
                                         </div>
@@ -284,12 +273,6 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="about-card">
-                                        <div class="about-footer">
-                                            <p>Copyright 2025 jorgeortega-ux. Todos los derechos reservados.</p>
-                                            <p>ProjectGhostline es una realidad gracias al proyecto de código abierto <b>Ghostline Core</b> y a otro <b>software de código abierto</b>.</p>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -305,6 +288,7 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
         </div>
     </div>
 </body>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
 <script type="module" src="<?php echo $BASE_URL; ?>/assets/js/init-app.js"></script>
 
 </html>

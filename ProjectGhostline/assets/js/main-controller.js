@@ -13,6 +13,8 @@ function initMainController() {
     let enableCloseWithEscape = true;
     let isAnimating = false;
 
+    const popperInstances = new Map();
+
     const buttons = document.querySelectorAll('[data-action]');
     const modules = document.querySelectorAll('.module-content[data-module]');
     const moduleOptions = document.querySelector('[data-module="moduleOptions"]');
@@ -25,7 +27,6 @@ function initMainController() {
         }
     });
 
-    // --- INICIO DE LA MODIFICACIÓN: Se añade el parámetro "menuToKeep" ---
     function handleNavigation(section, subsection, updateHistory = true, menuToKeep = null) {
         document.querySelectorAll('.section-wrapper, .section-container').forEach(el => {
             el.classList.remove('active');
@@ -48,10 +49,8 @@ function initMainController() {
             targetSection = document.querySelector(`[data-section="section${capitalize(section)}"]`);
         }
         
-        // La visualización del menú ahora depende de "menuSection"
         if (menuSection === 'settings') {
             showMenuList('settings');
-            // Si estamos en un submenú de ayuda pero mantenemos el menú de config, "about" sigue activo
             const activeSubsection = (section === 'help' && menuToKeep === 'settings') ? 'about' : subsection;
             activeMenu = document.querySelector(`[data-menu-list="settings"] [data-action="toggleSection${capitalize(activeSubsection)}"]`);
         } else if (menuSection === 'help') {
@@ -75,12 +74,10 @@ function initMainController() {
         }
 
         if (updateHistory) {
-            // La URL sigue reflejando la sección de contenido real
             navigateToUrl(section, subsection);
         }
         closeAllActiveModules();
     }
-    // --- FIN DE LA MODIFICACIÓN ---
 
     function showMenuList(menuName) {
         document.querySelectorAll('[data-menu-list]').forEach(menu => {
@@ -190,6 +187,10 @@ function initMainController() {
                         if (arrowIcon) {
                             arrowIcon.classList.remove('arrow-rotated');
                         }
+                        if (popperInstances.has(m)) {
+                            popperInstances.get(m).destroy();
+                            popperInstances.delete(m);
+                        }
                     }
                 }
             }
@@ -221,7 +222,33 @@ function initMainController() {
         }
         
         if (isModuleActive) {
+            if (popperInstances.has(module)) {
+                popperInstances.get(module).destroy();
+                popperInstances.delete(module);
+            }
             button.blur();
+        } else {
+            // --- INICIO DE LA MODIFICACIÓN ---
+            // Se accede a Popper a través del objeto window
+            const popperInstance = window.Popper.createPopper(button, module, {
+            // --- FIN DE LA MODIFICACIÓN ---
+                placement: 'bottom-start',
+                modifiers: [
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 5],
+                        },
+                    },
+                    {
+                        name: 'flip',
+                        options: {
+                            fallbackPlacements: ['top-start'],
+                        },
+                    },
+                ],
+            });
+            popperInstances.set(module, popperInstance);
         }
     }
 
@@ -233,18 +260,15 @@ function initMainController() {
         const module = container.querySelector('[data-module="moduleSelector"]');
         const allLinks = module.querySelectorAll('.menu-link');
     
-        // Update button content
         const iconHTML = selectedLink.querySelector('.menu-link-icon').innerHTML;
         const textHTML = selectedLink.querySelector('.menu-link-text').innerHTML;
         const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
     
         button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
     
-        // Update active state
         allLinks.forEach(link => link.classList.remove('active'));
         selectedLink.classList.add('active');
     
-        // Close selector
         closeAllActiveModules();
         button.blur();
     }
@@ -279,7 +303,6 @@ function initMainController() {
                 const subsectionMap = { 'privacypolicy': 'privacy-policy' };
                 const finalSubsection = subsectionMap[sectionName] || sectionName;
                 
-                // --- INICIO DE LA MODIFICACIÓN: Lógica de navegación contextual ---
                 const currentActiveMenuLink = document.querySelector('.menu-link.active');
                 const isFromAboutPage = currentActiveMenuLink && currentActiveMenuLink.dataset.action === 'toggleSectionAbout';
 
@@ -288,14 +311,12 @@ function initMainController() {
                 } else if (settingsSubsections.includes(finalSubsection)) {
                     handleNavigation('settings', finalSubsection);
                 } else if (helpSubsections.includes(finalSubsection)) {
-                    // Si el link es de ayuda y venimos de la página "about", mantenemos el menú de settings
                     if (isFromAboutPage) {
                         handleNavigation('help', finalSubsection, true, 'settings');
                     } else {
                         handleNavigation('help', finalSubsection);
                     }
                 }
-                // --- FIN DE LA MODIFICACIÓN ---
                 return;
             }
 
