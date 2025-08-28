@@ -181,30 +181,29 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                         <div class="selector-container">
                                             <button class="selector-button" data-action="toggleModuleSelector">
                                                 <span class="material-symbols-rounded">language</span>
-                                                <span>Español (México)</span>
-                                                <span class="material-symbols-rounded">expand_more</span>
+                                                <span></span> <span class="material-symbols-rounded">expand_more</span>
                                             </button>
                                             <div class="module-content module-selector disabled" data-module="moduleSelector">
                                                 <div class="menu-content">
                                                     <div class="menu-list">
                                                         <div class="menu-link">
-                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
                                                             <div class="menu-link-text"><span>English (United States)</span></div>
                                                         </div>
-                                                        <div class="menu-link active">
-                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
-                                                            <div class="menu-link-text"><span>Español (México)</span></div>
+                                                        <div class="menu-link">
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
+                                                            <div class="menu-link-text"><span>Español (Latinoamérica)</span></div>
                                                         </div>
                                                         <div class="menu-link">
-                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
                                                             <div class="menu-link-text"><span>Français (France)</span></div>
                                                         </div>
                                                         <div class="menu-link">
-                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
                                                             <div class="menu-link-text"><span>Deutsch (Deutschland)</span></div>
                                                         </div>
                                                         <div class="menu-link">
-                                                            <div class="menu-link-icon"><span class="material-symbols-rounded"></span></div>
+                                                            <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
                                                             <div class="menu-link-text"><span>Português (Brasil)</span></div>
                                                         </div>
                                                     </div>
