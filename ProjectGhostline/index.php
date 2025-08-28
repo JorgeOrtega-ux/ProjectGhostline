@@ -16,6 +16,49 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
     <link rel="stylesheet" type="text/css" href="<?php echo $BASE_URL; ?>/assets/css/styles.css">
     <title>ProjectGhostline</title>
+    
+    <!-- Script para prevenir flashes (FOUC) -->
+    <script>
+        (function() {
+            // --- Prevenir flash de tema ---
+            const savedTheme = localStorage.getItem('theme') || 'sync';
+            const htmlElement = document.documentElement;
+            
+            if (savedTheme === 'light') {
+                htmlElement.classList.add('light-theme');
+            } else if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark-theme');
+            } else if (savedTheme === 'sync') {
+                // Detectar tema del sistema
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    htmlElement.classList.add('dark-theme');
+                } else {
+                    htmlElement.classList.add('light-theme');
+                }
+            }
+            
+            // --- Prevenir flash de contenido ---
+            // Ocultar el body hasta que todo esté cargado
+            document.documentElement.style.visibility = 'hidden';
+            
+            // Función para mostrar el contenido cuando esté listo
+            function showContent() {
+                document.documentElement.style.visibility = 'visible';
+            }
+            
+            // Mostrar contenido cuando el DOM esté listo
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', showContent);
+            } else {
+                showContent();
+            }
+            
+            // Failsafe: mostrar contenido después de 500ms máximo
+            setTimeout(showContent, 500);
+        })();
+    </script>
+    
     <script>
         window.PROJECT_CONFIG = {
             baseUrl: '<?php echo $BASE_URL; ?>',

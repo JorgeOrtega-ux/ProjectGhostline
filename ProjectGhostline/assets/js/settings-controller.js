@@ -37,7 +37,7 @@ function initSettingsController() {
             htmlElement.classList.add('dark-theme');
         }
         localStorage.setItem('theme', theme);
-        updateThemeSelectorUI(theme); // Actualiza la UI cada vez que se aplica un tema
+        updateThemeSelectorUI(theme);
     }
 
     function handleSystemThemeChange(e) {
@@ -74,16 +74,16 @@ function initSettingsController() {
         });
     });
 
-    // --- Initial Load ---
+    // --- Initial Load Theme ---
     const savedTheme = localStorage.getItem('theme') || 'sync';
-    applyTheme(savedTheme); // Esta función ahora también actualiza la UI
+    applyTheme(savedTheme);
     if (savedTheme === 'sync') {
         handleSystemThemeChange(systemTheme);
     }
 
-
     // --- Language Management ---
     const languageSelector = document.querySelectorAll('[data-module="moduleSelector"]')[1];
+    const languageSelectorButton = languageSelector.previousElementSibling;
     const languageLinks = languageSelector.querySelectorAll('.menu-link');
     const availableLanguages = {
         'en': 'English (United States)',
@@ -93,50 +93,58 @@ function initSettingsController() {
         'pt': 'Português (Brasil)'
     };
 
-    function setLanguage(lang) {
+    function updateLanguageSelectorUI(lang) {
         const languageName = availableLanguages[lang] || availableLanguages['en'];
-        const button = languageSelector.previousElementSibling;
-        const activeLink = Array.from(languageLinks).find(link => link.textContent.includes(languageName));
+        const activeLink = Array.from(languageLinks).find(link => 
+            link.querySelector('.menu-link-text span').textContent.trim() === languageName
+        );
 
         if (activeLink) {
             languageLinks.forEach(link => link.classList.remove('active'));
             activeLink.classList.add('active');
             
-            // --- INICIO DE LA MODIFICACIÓN ---
-            // Se define el ícono directamente aquí para evitar inconsistencias.
             const iconHTML = `<span class="material-symbols-rounded">language</span>`;
-            // --- FIN DE LA MODIFICACIÓN ---
-
             const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
             const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
-            button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+            languageSelectorButton.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
         }
+    }
+
+    function setLanguage(lang) {
         localStorage.setItem('language', lang);
+        updateLanguageSelectorUI(lang);
     }
 
-    const userLang = navigator.language || navigator.userLanguage;
-    const shortLang = userLang.split('-')[0];
-    const savedLang = localStorage.getItem('language');
-
-    if (savedLang) {
-        setLanguage(savedLang);
-    } else if (availableLanguages[userLang]) {
-        setLanguage(userLang);
-    } else if (availableLanguages[shortLang]) {
-        setLanguage(shortLang);
-    } else {
-        setLanguage('en');
-    }
-
+    // --- Language Event Listeners ---
     languageLinks.forEach(link => {
         link.addEventListener('click', () => {
-            const langText = link.textContent.trim();
+            const langText = link.querySelector('.menu-link-text span').textContent.trim();
             const langCode = Object.keys(availableLanguages).find(key => availableLanguages[key] === langText);
             if (langCode) {
                 setLanguage(langCode);
             }
         });
     });
+
+    // --- Initial Language Load ---
+    const savedLang = localStorage.getItem('language');
+    
+    if (savedLang && availableLanguages[savedLang]) {
+        // Si hay un idioma guardado y es válido, usarlo
+        setLanguage(savedLang);
+    } else {
+        // Si no hay idioma guardado, detectar del navegador
+        const userLang = navigator.language || navigator.userLanguage;
+        const shortLang = userLang.split('-')[0];
+        
+        if (availableLanguages[userLang]) {
+            setLanguage(userLang);
+        } else if (availableLanguages[shortLang]) {
+            setLanguage(shortLang);
+        } else {
+            setLanguage('en');
+        }
+    }
 }
 
 export { initSettingsController };
