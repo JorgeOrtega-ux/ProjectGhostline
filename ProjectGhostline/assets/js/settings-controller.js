@@ -1,23 +1,17 @@
 // assets/js/settings-controller.js
 
 function initSettingsController() {
+    const settingsSection = document.querySelector('[data-section="sectionAccessibility"]');
+    if (!settingsSection) return; // No hacer nada si no estamos en la sección de ajustes
+
     // --- Theme Management ---
-    const themeSelectorContainer = document.querySelector('.selector-container');
+    const themeSelectorContainer = settingsSection.querySelector('.selector-container');
     const themeSelectorButton = themeSelectorContainer.querySelector('.selector-button');
-    const themeModule = themeSelectorContainer.querySelector('[data-module="moduleSelector"]');
-    const themeLinks = themeModule.querySelectorAll('.menu-link');
+    const themeLinks = themeSelectorContainer.querySelectorAll('.menu-link[data-theme-value]');
     const htmlElement = document.documentElement;
 
     function updateThemeSelectorUI(theme) {
-        let activeLink;
-        if (theme === 'light') {
-            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Tema Claro'));
-        } else if (theme === 'dark') {
-            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Tema Oscuro'));
-        } else { // 'sync'
-            activeLink = Array.from(themeLinks).find(link => link.textContent.includes('Sincronizar'));
-        }
-
+        const activeLink = themeSelectorContainer.querySelector(`.menu-link[data-theme-value="${theme}"]`);
         if (activeLink) {
             themeLinks.forEach(link => link.classList.remove('active'));
             activeLink.classList.add('active');
@@ -58,15 +52,7 @@ function initSettingsController() {
 
     themeLinks.forEach(link => {
         link.addEventListener('click', () => {
-            const themeText = link.querySelector('.menu-link-text span').textContent.toLowerCase();
-            let themeValue;
-            if (themeText.includes('claro')) {
-                themeValue = 'light';
-            } else if (themeText.includes('oscuro')) {
-                themeValue = 'dark';
-            } else {
-                themeValue = 'sync';
-            }
+            const themeValue = link.getAttribute('data-theme-value');
             applyTheme(themeValue);
             if (themeValue === 'sync') {
                 handleSystemThemeChange(systemTheme);
@@ -74,31 +60,13 @@ function initSettingsController() {
         });
     });
 
-    // --- Initial Load Theme ---
-    const savedTheme = localStorage.getItem('theme') || 'sync';
-    applyTheme(savedTheme);
-    if (savedTheme === 'sync') {
-        handleSystemThemeChange(systemTheme);
-    }
-
     // --- Language Management ---
-    const languageSelector = document.querySelectorAll('[data-module="moduleSelector"]')[1];
-    const languageSelectorButton = languageSelector.previousElementSibling;
-    const languageLinks = languageSelector.querySelectorAll('.menu-link');
-    const availableLanguages = {
-        'en': 'English (United States)',
-        'es': 'Español (Latinoamérica)',
-        'fr': 'Français (France)',
-        'de': 'Deutsch (Deutschland)',
-        'pt': 'Português (Brasil)'
-    };
-
+    const languageSelectorContainer = settingsSection.querySelectorAll('.selector-container')[1];
+    const languageSelectorButton = languageSelectorContainer.querySelector('.selector-button');
+    const languageLinks = languageSelectorContainer.querySelectorAll('.menu-link[data-lang-value]');
+    
     function updateLanguageSelectorUI(lang) {
-        const languageName = availableLanguages[lang] || availableLanguages['en'];
-        const activeLink = Array.from(languageLinks).find(link => 
-            link.querySelector('.menu-link-text span').textContent.trim() === languageName
-        );
-
+        const activeLink = languageSelectorContainer.querySelector(`.menu-link[data-lang-value="${lang}"]`);
         if (activeLink) {
             languageLinks.forEach(link => link.classList.remove('active'));
             activeLink.classList.add('active');
@@ -115,40 +83,18 @@ function initSettingsController() {
         updateLanguageSelectorUI(lang);
     }
 
-    // --- Language Event Listeners ---
     languageLinks.forEach(link => {
         link.addEventListener('click', () => {
-            const langText = link.querySelector('.menu-link-text span').textContent.trim();
-            const langCode = Object.keys(availableLanguages).find(key => availableLanguages[key] === langText);
+            const langCode = link.getAttribute('data-lang-value');
             if (langCode) {
                 setLanguage(langCode);
             }
         });
     });
 
-    // --- Initial Language Load ---
-    const savedLang = localStorage.getItem('language');
-    
-    if (savedLang && availableLanguages[savedLang]) {
-        // Si hay un idioma guardado y es válido, usarlo
-        setLanguage(savedLang);
-    } else {
-        // Si no hay idioma guardado, detectar del navegador
-        const userLang = navigator.language || navigator.userLanguage;
-        const shortLang = userLang.split('-')[0];
-        
-        if (availableLanguages[userLang]) {
-            setLanguage(userLang);
-        } else if (availableLanguages[shortLang]) {
-            setLanguage(shortLang);
-        } else {
-            setLanguage('en');
-        }
-    }
-
     // --- Open Links Management ---
     const openLinksToggle = document.getElementById('openLinksInNewTabToggle');
-
+    
     function applyOpenLinksSetting() {
         const savedState = localStorage.getItem('openLinksInNewTab') || 'true';
         openLinksToggle.checked = savedState === 'true';
@@ -158,26 +104,42 @@ function initSettingsController() {
         localStorage.setItem('openLinksInNewTab', openLinksToggle.checked);
     }
 
-    applyOpenLinksSetting();
     openLinksToggle.addEventListener('change', saveOpenLinksSetting);
-    
-    // --- INICIO DE LA MODIFICACIÓN: Log de configuración inicial ---
-    function logInitialSettings() {
-        const theme = localStorage.getItem('theme') || 'sync';
-        const language = localStorage.getItem('language') || 'auto';
-        const openLinks = localStorage.getItem('openLinksInNewTab') || 'true';
+
+    // --- Initial Settings Load Function ---
+    function loadInitialSettings() {
+        // Theme
+        const savedTheme = localStorage.getItem('theme') || 'sync';
+        applyTheme(savedTheme);
+        if (savedTheme === 'sync') {
+            handleSystemThemeChange(systemTheme);
+        }
+
+        // Language
+        const savedLang = localStorage.getItem('language');
+        const availableLangs = Array.from(languageLinks).map(link => link.getAttribute('data-lang-value'));
+        
+        if (savedLang && availableLangs.includes(savedLang)) {
+            setLanguage(savedLang);
+        } else {
+            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            if (availableLangs.includes(userLang)) {
+                setLanguage(userLang);
+            } else {
+                setLanguage('en'); 
+            }
+        }
+        
+        // Open Links
+        applyOpenLinksSetting();
 
         console.log("=========================================");
-        console.log(" Ghostline Settings Loaded");
-        console.log("=========================================");
-        console.log(`🎨 Tema: ${theme}`);
-        console.log(`🌐 Idioma: ${language}`);
-        console.log(`🔗 Abrir enlaces en nueva pestaña: ${openLinks}`);
+        console.log(" Ghostline Settings Initialized");
         console.log("=========================================");
     }
 
-    logInitialSettings();
-    // --- FIN DE LA MODIFICACIÓN ---
+    // --- RUN INITIALIZATION ---
+    loadInitialSettings();
 }
 
 export { initSettingsController };
