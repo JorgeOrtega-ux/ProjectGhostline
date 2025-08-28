@@ -1,3 +1,5 @@
+import { translatePage } from './language-manager.js';
+
 function initSettingsController() {
     const themeSelectors = document.querySelectorAll('[data-theme-value]');
     const languageSelectors = document.querySelectorAll('[data-lang-value]');
@@ -35,6 +37,7 @@ function initSettingsController() {
     function setLanguage(lang) {
         localStorage.setItem('selectedLanguage', lang);
         document.documentElement.lang = lang;
+        translatePage(lang); // <--- AÑADIDO: Llama a la función de traducción
         let activeLink = null;
 
         // 1. Pone la clase 'active' en el elemento correcto de la lista
