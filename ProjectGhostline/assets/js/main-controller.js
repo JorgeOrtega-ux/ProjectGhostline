@@ -31,7 +31,9 @@ function initMainController() {
             el.classList.add('disabled');
         });
 
-        document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
+        // --- ESTA ES LA LÍNEA CORREGIDA ---
+        // Ahora solo afecta a los links dentro de los menús de navegación principal.
+        document.querySelectorAll('[data-menu-list] .menu-link').forEach(link => link.classList.remove('active'));
 
         let targetWrapper, targetSection, activeMenu;
         const menuSection = menuToKeep || section; // Usar el menú a mantener, o el actual por defecto
@@ -362,6 +364,26 @@ function initMainController() {
             document.body.classList.remove('no-transition');
         }, 100);
     });
+    
+    // --- Initial Page Load Handler ---
+    function handleInitialPageLoad() {
+        const path = window.location.pathname;
+        const pathParts = path.split('/').filter(part => part && part !== 'ProjectGhostline');
+        
+        let section = pathParts[0] || 'home';
+        let subsection = pathParts[1] || null;
+
+        if (section === 'settings' && !subsection) {
+            subsection = 'accessibility';
+        }
+        if (section === 'help' && !subsection) {
+            subsection = 'privacy-policy';
+        }
+        
+        handleNavigation(section, subsection, false);
+    }
+    
+    handleInitialPageLoad();
 }
 
 export {

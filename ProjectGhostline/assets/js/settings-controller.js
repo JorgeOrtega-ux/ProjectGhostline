@@ -1,145 +1,96 @@
-// assets/js/settings-controller.js
-
 function initSettingsController() {
-    const settingsSection = document.querySelector('[data-section="sectionAccessibility"]');
-    if (!settingsSection) return; // No hacer nada si no estamos en la sección de ajustes
+    const themeSelectors = document.querySelectorAll('[data-theme-value]');
+    const languageSelectors = document.querySelectorAll('[data-lang-value]');
 
-    // --- Theme Management ---
-    const themeSelectorContainer = settingsSection.querySelector('.selector-container');
-    const themeSelectorButton = themeSelectorContainer.querySelector('.selector-button');
-    const themeLinks = themeSelectorContainer.querySelectorAll('.menu-link[data-theme-value]');
-    const htmlElement = document.documentElement;
+    // --- LÓGICA DEL TEMA ---
+    function applyTheme(preference) {
+        const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let finalTheme = preference;
 
-    function updateThemeSelectorUI(theme) {
-        const activeLink = themeSelectorContainer.querySelector(`.menu-link[data-theme-value="${theme}"]`);
-        if (activeLink) {
-            themeLinks.forEach(link => link.classList.remove('active'));
-            activeLink.classList.add('active');
-
-            const iconHTML = activeLink.querySelector('.menu-link-icon').innerHTML;
-            const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
-            const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
-            themeSelectorButton.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+        if (preference === 'sync') {
+            finalTheme = isSystemDark ? 'dark' : 'light';
         }
+
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add(`theme-${finalTheme}`);
     }
 
-    function applyTheme(theme) {
-        htmlElement.classList.remove('light-theme', 'dark-theme');
-        if (theme === 'light') {
-            htmlElement.classList.add('light-theme');
-        } else if (theme === 'dark') {
-            htmlElement.classList.add('dark-theme');
-        }
-        localStorage.setItem('theme', theme);
-        updateThemeSelectorUI(theme);
-    }
-
-    function handleSystemThemeChange(e) {
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'sync') {
-            if (e.matches) {
-                htmlElement.classList.add('dark-theme');
-                htmlElement.classList.remove('light-theme');
+    function updateActiveThemeSelector(preference) {
+        themeSelectors.forEach(selector => {
+            if (selector.dataset.themeValue === preference) {
+                selector.classList.add('active');
             } else {
-                htmlElement.classList.add('light-theme');
-                htmlElement.classList.remove('dark-theme');
-            }
-        }
-    }
-
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
-    systemTheme.addEventListener('change', handleSystemThemeChange);
-
-    themeLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            const themeValue = link.getAttribute('data-theme-value');
-            applyTheme(themeValue);
-            if (themeValue === 'sync') {
-                handleSystemThemeChange(systemTheme);
+                selector.classList.remove('active');
             }
         });
-    });
-
-    // --- Language Management ---
-    const languageSelectorContainer = settingsSection.querySelectorAll('.selector-container')[1];
-    const languageSelectorButton = languageSelectorContainer.querySelector('.selector-button');
-    const languageLinks = languageSelectorContainer.querySelectorAll('.menu-link[data-lang-value]');
-    
-    function updateLanguageSelectorUI(lang) {
-        const activeLink = languageSelectorContainer.querySelector(`.menu-link[data-lang-value="${lang}"]`);
-        if (activeLink) {
-            languageLinks.forEach(link => link.classList.remove('active'));
-            activeLink.classList.add('active');
-            
-            const iconHTML = `<span class="material-symbols-rounded">language</span>`;
-            const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
-            const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
-            languageSelectorButton.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
-        }
     }
 
+    function setTheme(preference) {
+        localStorage.setItem('selectedTheme', preference);
+        updateActiveThemeSelector(preference);
+        applyTheme(preference);
+    }
+
+    // --- LÓGICA DEL IDIOMA ---
     function setLanguage(lang) {
-        localStorage.setItem('language', lang);
-        updateLanguageSelectorUI(lang);
+        localStorage.setItem('selectedLanguage', lang);
+        document.documentElement.lang = lang;
+        let activeLink = null;
+
+        // 1. Pone la clase 'active' en el elemento correcto de la lista
+        languageSelectors.forEach(selector => {
+            if (selector.dataset.langValue === lang) {
+                selector.classList.add('active');
+                activeLink = selector; // Guarda una referencia al elemento activo
+            } else {
+                selector.classList.remove('active');
+            }
+        });
+
+        // 2. --- ESTA ES LA PARTE NUEVA ---
+        // Actualiza el texto y el icono del botón principal.
+        if (activeLink) {
+            const container = activeLink.closest('.selector-container');
+            if (container) {
+                const button = container.querySelector('.selector-button');
+                if (button) {
+                    const iconHTML = activeLink.querySelector('.menu-link-icon').innerHTML;
+                    const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
+                    const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
+                    
+                    // Reconstruye el contenido del botón para que muestre la selección
+                    button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+                }
+            }
+        }
     }
 
-    languageLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            const langCode = link.getAttribute('data-lang-value');
-            if (langCode) {
-                setLanguage(langCode);
-            }
+    // --- INICIALIZACIÓN Y EVENTOS ---
+    themeSelectors.forEach(selector => {
+        selector.addEventListener('click', function() {
+            setTheme(this.dataset.themeValue);
         });
     });
 
-    // --- Open Links Management ---
-    const openLinksToggle = document.getElementById('openLinksInNewTabToggle');
-    
-    function applyOpenLinksSetting() {
-        const savedState = localStorage.getItem('openLinksInNewTab') || 'true';
-        openLinksToggle.checked = savedState === 'true';
-    }
+    languageSelectors.forEach(selector => {
+        selector.addEventListener('click', function() {
+            setLanguage(this.dataset.langValue);
+        });
+    });
 
-    function saveOpenLinksSetting() {
-        localStorage.setItem('openLinksInNewTab', openLinksToggle.checked);
-    }
-
-    openLinksToggle.addEventListener('change', saveOpenLinksSetting);
-
-    // --- Initial Settings Load Function ---
-    function loadInitialSettings() {
-        // Theme
-        const savedTheme = localStorage.getItem('theme') || 'sync';
-        applyTheme(savedTheme);
-        if (savedTheme === 'sync') {
-            handleSystemThemeChange(systemTheme);
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        const currentPreference = localStorage.getItem('selectedTheme');
+        if (currentPreference === 'sync') {
+            applyTheme('sync');
         }
+    });
 
-        // Language
-        const savedLang = localStorage.getItem('language');
-        const availableLangs = Array.from(languageLinks).map(link => link.getAttribute('data-lang-value'));
-        
-        if (savedLang && availableLangs.includes(savedLang)) {
-            setLanguage(savedLang);
-        } else {
-            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-            if (availableLangs.includes(userLang)) {
-                setLanguage(userLang);
-            } else {
-                setLanguage('en'); 
-            }
-        }
-        
-        // Open Links
-        applyOpenLinksSetting();
+    // --- CARGA INICIAL DE LA PÁGINA ---
+    const savedTheme = localStorage.getItem('selectedTheme') || 'sync';
+    setTheme(savedTheme);
 
-        console.log("=========================================");
-        console.log(" Ghostline Settings Initialized");
-        console.log("=========================================");
-    }
-
-    // --- RUN INITIALIZATION ---
-    loadInitialSettings();
+    const savedLanguage = localStorage.getItem('selectedLanguage') || 'es';
+    setLanguage(savedLanguage);
 }
 
 export { initSettingsController };
