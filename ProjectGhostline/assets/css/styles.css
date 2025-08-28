@@ -301,7 +301,6 @@ body {
     line-height: 1.25; 
 }
 
-/* --- INICIO DE LA MODIFICACIÓN --- */
 .menu-link-text-primary {
     font-size: 14px;
     font-weight: 500;
@@ -317,7 +316,6 @@ body {
     font-size: 14px;
     font-weight: 500;
 }
-/* --- FIN DE LA MODIFICACIÓN --- */
 
 .selector-button .menu-link-text {
     align-items: flex-start;
@@ -399,8 +397,8 @@ body {
 /* ===== INICIO: ESTILOS SECCIÓN ACCESIBILIDAD ===== */
 /* ================================================= */
 .settings-section {
-    width: 100%;
-    max-width: 800px;
+    width: 700px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 24px;
     display: flex;
@@ -686,9 +684,23 @@ body {
     color: var(--text-interactive);
     font-weight: 500;
 }
+
+.section-container {
+    width: 100%;
+}
 /* ========================================================== */
 /* ===== FIN: ESTILOS SECCIÓN "ACERCA DE PROJECTGHOSTLINE" ===== */
 /* ========================================================== */
+
+/* ========================================================== */
+/* ==================== MEDIA QUERIES ======================= */
+/* ========================================================== */
+@media (max-width: 724px) {
+    .settings-section {
+        width: 100%;
+    }
+}
+
 @media (max-width: 468px) {
     .pill-container {
         display: flex;
