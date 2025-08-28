@@ -13,8 +13,6 @@ function initMainController() {
     let enableCloseWithEscape = true;
     let isAnimating = false;
 
-    const popperInstances = new Map();
-
     const buttons = document.querySelectorAll('[data-action]');
     const modules = document.querySelectorAll('.module-content[data-module]');
     const moduleOptions = document.querySelector('[data-module="moduleOptions"]');
@@ -187,10 +185,6 @@ function initMainController() {
                         if (arrowIcon) {
                             arrowIcon.classList.remove('arrow-rotated');
                         }
-                        if (popperInstances.has(m)) {
-                            popperInstances.get(m).destroy();
-                            popperInstances.delete(m);
-                        }
                     }
                 }
             }
@@ -222,33 +216,7 @@ function initMainController() {
         }
         
         if (isModuleActive) {
-            if (popperInstances.has(module)) {
-                popperInstances.get(module).destroy();
-                popperInstances.delete(module);
-            }
             button.blur();
-        } else {
-            // --- INICIO DE LA MODIFICACIÓN ---
-            // Se accede a Popper a través del objeto window
-            const popperInstance = window.Popper.createPopper(button, module, {
-            // --- FIN DE LA MODIFICACIÓN ---
-                placement: 'bottom-start',
-                modifiers: [
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: [0, 5],
-                        },
-                    },
-                    {
-                        name: 'flip',
-                        options: {
-                            fallbackPlacements: ['top-start'],
-                        },
-                    },
-                ],
-            });
-            popperInstances.set(module, popperInstance);
         }
     }
 
