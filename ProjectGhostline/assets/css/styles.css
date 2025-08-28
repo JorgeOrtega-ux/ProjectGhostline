@@ -200,19 +200,19 @@ body {
 }
 
 /* --- INICIO DE LA MODIFICACIÓN --- */
-.module-surface .menu-list[data-menu-list="main"],
-.module-surface .menu-list[data-menu-list="settings"] {
-    flex-grow: 1; /* Permite que la lista crezca para ocupar el espacio vertical */
+.module-surface .menu-list {
+    flex-grow: 1;
+    gap: 8px; /* Define el espacio entre los .menu-group */
 }
 
-.menu-group {
+.module-surface .menu-group {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* ESTA LÍNEA AÑADE EL ESPACIO DE 8PX ENTRE LOS LINKS */
+    gap: 8px; /* Define el espacio entre los .menu-link dentro de un grupo */
 }
 
-.menu-group-bottom {
-    margin-top: auto; /* Empuja el grupo inferior hacia el fondo */
+.module-surface .menu-group-bottom {
+    margin-top: auto;
 }
 /* --- FIN DE LA MODIFICACIÓN --- */
 

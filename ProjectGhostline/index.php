@@ -128,27 +128,31 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 </div>
                             </div>
                             <div class="menu-list <?php echo $isHelpMenu ? '' : 'disabled'; ?>" data-menu-list="help">
-                                <div class="menu-link" data-action="toggleSectionHome">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
-                                    <div class="menu-link-text"><span>Volver a inicio</span></div>
+                                <div class="menu-group menu-group-top">
+                                    <div class="menu-link" data-action="toggleSectionHome">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
+                                        <div class="menu-link-text"><span>Volver a inicio</span></div>
+                                    </div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : ''; ?>" data-action="toggleSectionPrivacyPolicy">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">policy</span></div>
-                                    <div class="menu-link-text"><span>Política de privacidad</span></div>
+                                <div class="menu-group">
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : ''; ?>" data-action="toggleSectionPrivacyPolicy">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">policy</span></div>
+                                        <div class="menu-link-text"><span>Política de privacidad</span></div>
+                                    </div>
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'terms') ? 'active' : ''; ?>" data-action="toggleSectionTerms">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">gavel</span></div>
+                                        <div class="menu-link-text"><span>Términos y condiciones</span></div>
+                                    </div>
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : ''; ?>" data-action="toggleSectionCookies">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">cookie</span></div>
+                                        <div class="menu-link-text"><span>Política de cookies</span></div>
+                                    </div>
+                                    <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : ''; ?>" data-action="toggleSectionFeedback">
+                                        <div class="menu-link-icon"><span class="material-symbols-rounded">feedback</span></div>
+                                        <div class="menu-link-text"><span>Enviar comentarios</span></div>
+                                    </div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'terms') ? 'active' : ''; ?>" data-action="toggleSectionTerms">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">gavel</span></div>
-                                    <div class="menu-link-text"><span>Términos y condiciones</span></div>
                                 </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : ''; ?>" data-action="toggleSectionCookies">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">cookie</span></div>
-                                    <div class="menu-link-text"><span>Política de cookies</span></div>
-                                </div>
-                                <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : ''; ?>" data-action="toggleSectionFeedback">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">feedback</span></div>
-                                    <div class="menu-link-text"><span>Enviar comentarios</span></div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="general-content-scrolleable overflow-y">
