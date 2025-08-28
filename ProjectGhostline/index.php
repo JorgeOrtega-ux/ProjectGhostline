@@ -77,11 +77,11 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 <div class="menu-list">
                                     <div class="menu-link" data-action="toggleSettings">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">settings</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="menu" data-translate="settings">Configuracion</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="menu" data-translate="settings"></span></div>
                                     </div>
                                     <div class="menu-link" data-action="toggleHelp">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">help</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="menu" data-translate="help">Ayuda y recursos</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="menu" data-translate="help"></span></div>
                                     </div>
                                 </div>
                             </div>
@@ -95,17 +95,17 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 <div class="menu-group menu-group-top">
                                     <div class="menu-link <?php echo ($CURRENT_SECTION === 'home') ? 'active' : ''; ?>" data-action="toggleSectionHome">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">home</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="home">Pagina principal</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="home"></span></div>
                                     </div>
                                     <div class="menu-link <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : ''; ?>" data-action="toggleSectionExplore">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">folder</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="explore">Explorar colecciones</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="explore"></span></div>
                                     </div>
                                 </div>
                                 <div class="menu-group menu-group-bottom">
                                     <div class="menu-link <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : ''; ?>" data-action="toggleSectionTrash">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">delete</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="trash">Papelera de reciclaje</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="main_menu" data-translate="trash"></span></div>
                                     </div>
                                 </div>
                             </div>
@@ -113,17 +113,17 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 <div class="menu-group menu-group-top">
                                     <div class="menu-link" data-action="toggleSectionHome">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="back_home">Volver a inicio</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="back_home"></span></div>
                                     </div>
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : ''; ?>" data-action="toggleSectionAccessibility">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">accessibility</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="accessibility">Accesibilidad</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="accessibility"></span></div>
                                     </div>
                                 </div>
                                 <div class="menu-group menu-group-bottom">
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'about') ? 'active' : ''; ?>" data-action="toggleSectionAbout">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">info</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="about">Acerca de ProjectGhostline</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="about"></span></div>
                                     </div>
                                 </div>
                             </div>
@@ -131,25 +131,25 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                 <div class="menu-group menu-group-top">
                                     <div class="menu-link" data-action="toggleSectionHome">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">arrow_back</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="back_home">Volver a inicio</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="settings_menu" data-translate="back_home"></span></div>
                                     </div>
                                 </div>
                                 <div class="menu-group">
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : ''; ?>" data-action="toggleSectionPrivacyPolicy">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">policy</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="privacy_policy">Política de privacidad</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="privacy_policy"></span></div>
                                     </div>
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'terms') ? 'active' : ''; ?>" data-action="toggleSectionTerms">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">gavel</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="terms">Términos y condiciones</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="terms"></span></div>
                                     </div>
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : ''; ?>" data-action="toggleSectionCookies">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">cookie</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="cookies">Política de cookies</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="cookies"></span></div>
                                     </div>
                                     <div class="menu-link <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : ''; ?>" data-action="toggleSectionFeedback">
                                         <div class="menu-link-icon"><span class="material-symbols-rounded">feedback</span></div>
-                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="feedback">Enviar comentarios</span></div>
+                                        <div class="menu-link-text"><span data-translate-category="help_menu" data-translate="feedback"></span></div>
                                     </div>
                                 </div>
                                 </div>
@@ -157,27 +157,27 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                     </div>
                     <div class="general-content-scrolleable overflow-y">
                         <div class="section-wrapper <?php echo $isMainMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperMain">
-                            <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome">Home Section</div>
-                            <div class="section-container <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : 'disabled'; ?>" data-section="sectionExplore">Explore Section</div>
-                            <div class="section-container <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : 'disabled'; ?>" data-section="sectionTrash">Trash Section</div>
+                            <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome"></div>
+                            <div class="section-container <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : 'disabled'; ?>" data-section="sectionExplore"></div>
+                            <div class="section-container <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : 'disabled'; ?>" data-section="sectionTrash"></div>
                         </div>
                         <div class="section-wrapper <?php echo $isSettingsMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperSettings">
                             <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'accessibility') ? 'active' : 'disabled'; ?>" data-section="sectionAccessibility">
                                 <div class="settings-section">
                                     <div class="settings-header">
-                                        <h2 data-translate-category="accessibility_page" data-translate="title">Accesibilidad</h2>
-                                        <p data-translate-category="accessibility_page" data-translate="description">Configura las opciones de accesibilidad para adaptar la interfaz a tus necesidades.</p>
+                                        <h2 data-translate-category="accessibility_page" data-translate="title"></h2>
+                                        <p data-translate-category="accessibility_page" data-translate="description"></p>
                                     </div>
 
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-content">
-                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="theme_title">Tema</span>
-                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="theme_description">Personaliza la apariencia de tu cuenta. Selecciona un tema o sincroniza con tu sistema.</span>
+                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="theme_title"></span>
+                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="theme_description"></span>
                                         </div>
                                         <div class="selector-container">
                                             <button class="selector-button" data-action="toggleModuleSelector">
                                                 <span class="material-symbols-rounded">sync</span>
-                                                <span data-translate-category="accessibility_page" data-translate="sync_system">Sincronizar con el sistema</span>
+                                                <span data-translate-category="accessibility_page" data-translate="sync_system"></span>
                                                 <span class="material-symbols-rounded">expand_more</span>
                                             </button>
                                             <div class="module-content module-selector disabled" data-module="moduleSelector">
@@ -185,15 +185,15 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                                     <div class="menu-list">
                                                         <div class="menu-link active" data-theme-value="sync">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">sync</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="sync_system">Sincronizar con el sistema</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="sync_system"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-theme-value="light">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">light_mode</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="light_theme">Tema Claro</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="light_theme"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-theme-value="dark">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">dark_mode</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="dark_theme">Tema Oscuro</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="dark_theme"></span></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -203,8 +203,8 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
 
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-content">
-                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="language_title">Idioma</span>
-                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="language_description">Selecciona tu idioma de preferencia para la interfaz.</span>
+                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="language_title"></span>
+                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="language_description"></span>
                                         </div>
                                         <div class="selector-container">
                                             <button class="selector-button" data-action="toggleModuleSelector">
@@ -216,23 +216,23 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                                     <div class="menu-list">
                                                         <div class="menu-link" data-lang-value="en">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="en">English (United States)</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="en"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-lang-value="es">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="es">Español (Latinoamérica)</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="es"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-lang-value="fr">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="fr">Français (France)</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="fr"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-lang-value="de">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="de">Deutsch (Deutschland)</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="de"></span></div>
                                                         </div>
                                                         <div class="menu-link" data-lang-value="pt">
                                                             <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="pt">Português (Brasil)</span></div>
+                                                            <div class="menu-link-text"><span data-translate-category="languages" data-translate="pt"></span></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -241,8 +241,8 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                     </div>
                                     <div class="settings-card settings-card--vertical">
                                         <div class="settings-card-left">
-                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="open_links_title">Abrir enlaces en una pestaña nueva</span>
-                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="open_links_description">En el navegador web, los enlaces siempre se abrirán en una pestaña nueva.</span>
+                                            <span class="settings-card-title" data-translate-category="accessibility_page" data-translate="open_links_title"></span>
+                                            <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="open_links_description"></span>
                                         </div>
                                         <div class="settings-card-right">
                                             <label class="toggle-switch">
@@ -263,15 +263,15 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                                         <div class="about-body">
                                             <div class="about-version-info">
                                                 <span class="material-symbols-rounded">verified</span>
-                                                <span>Versión 1.0.0 (Build Oficial)</span>
+                                                <span></span>
                                             </div>
                                             <ul class="about-links-list">
                                                 <li class="about-link-item" data-action="toggleSectionPrivacyPolicy">
-                                                    <span data-translate-category="help_menu" data-translate="privacy_policy">Política de Privacidad</span>
+                                                    <span data-translate-category="help_menu" data-translate="privacy_policy"></span>
                                                     <span class="material-symbols-rounded">open_in_new</span>
                                                 </li>
                                                 <li class="about-link-item" data-action="toggleSectionFeedback">
-                                                    <span>Informar un problema</span>
+                                                    <span></span>
                                                     <span class="material-symbols-rounded">open_in_new</span>
                                                 </li>
                                             </ul>
@@ -281,10 +281,10 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
                             </div>
                         </div>
                         <div class="section-wrapper <?php echo $isHelpMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperHelp">
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacyPolicy">Sección de Política de privacidad</div>
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'terms') ? 'active' : 'disabled'; ?>" data-section="sectionTerms">Sección de Términos y condiciones</div>
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : 'disabled'; ?>" data-section="sectionCookies">Sección de Política de cookies</div>
-                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : 'disabled'; ?>" data-section="sectionFeedback">Sección de Enviar comentarios</div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'privacy-policy') ? 'active' : 'disabled'; ?>" data-section="sectionPrivacyPolicy"></div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'terms') ? 'active' : 'disabled'; ?>" data-section="sectionTerms"></div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : 'disabled'; ?>" data-section="sectionCookies"></div>
+                            <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : 'disabled'; ?>" data-section="sectionFeedback"></div>
                         </div>
                     </div>
                 </div>

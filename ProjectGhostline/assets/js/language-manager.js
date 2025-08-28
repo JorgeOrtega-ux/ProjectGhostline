@@ -2,7 +2,7 @@ let translations = {};
 
 async function loadTranslations() {
     try {
-        const response = await fetch('assets/languages/translations.json');
+        const response = await fetch(`${window.PROJECT_CONFIG.baseUrl}/assets/languages/translations.json`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
