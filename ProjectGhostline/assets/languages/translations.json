@@ -206,5 +206,12 @@
       "de": "Portugiesisch (Brasilien)",
       "pt": "Português (Brasil)"
     }
+  },
+  "native_languages": {
+      "en": "English",
+      "es": "Español",
+      "fr": "Français",
+      "de": "Deutsch",
+      "pt": "Português"
   }
 }

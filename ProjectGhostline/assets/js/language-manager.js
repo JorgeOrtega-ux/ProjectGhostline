@@ -16,11 +16,20 @@ function translatePage(language) {
     document.querySelectorAll('[data-translate]').forEach(element => {
         const key = element.dataset.translate;
         const category = element.dataset.translateCategory;
-        if (category && key && translations[category] && translations[category][key] && translations[category][key][language]) {
-            element.textContent = translations[category][key][language];
+
+        if (category && key && translations[category]) {
+            if (category === 'native_languages') {
+                if (translations[category][key]) {
+                    element.textContent = translations[category][key];
+                }
+            } 
+            else if (translations[category][key] && translations[category][key][language]) {
+                element.textContent = translations[category][key][language];
+            }
         }
     });
 }
+
 
 function initLanguageManager() {
     return loadTranslations();

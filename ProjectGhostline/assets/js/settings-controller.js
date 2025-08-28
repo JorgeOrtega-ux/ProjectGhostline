@@ -13,8 +13,8 @@ function initSettingsController() {
             finalTheme = isSystemDark ? 'dark' : 'light';
         }
 
-        document.body.classList.remove('theme-light', 'theme-dark');
-        document.body.classList.add(`theme-${finalTheme}`);
+        document.documentElement.className = '';
+        document.documentElement.classList.add(`theme-${finalTheme}`);
     }
 
     function updateActiveThemeSelector(preference) {
@@ -28,8 +28,6 @@ function initSettingsController() {
             }
         });
 
-        // --- INICIO DE LA MODIFICACIÓN ---
-        // Actualiza el botón principal del selector de tema para que muestre la selección actual.
         if (activeLink) {
             const container = activeLink.closest('.selector-container');
             if (container) {
@@ -43,7 +41,6 @@ function initSettingsController() {
                 }
             }
         }
-        // --- FIN DE LA MODIFICACIÓN ---
     }
 
     function setTheme(preference) {
@@ -56,21 +53,18 @@ function initSettingsController() {
     function setLanguage(lang) {
         localStorage.setItem('selectedLanguage', lang);
         document.documentElement.lang = lang;
-        translatePage(lang); // <--- AÑADIDO: Llama a la función de traducción
+        translatePage(lang); 
         let activeLink = null;
 
-        // 1. Pone la clase 'active' en el elemento correcto de la lista
         languageSelectors.forEach(selector => {
             if (selector.dataset.langValue === lang) {
                 selector.classList.add('active');
-                activeLink = selector; // Guarda una referencia al elemento activo
+                activeLink = selector;
             } else {
                 selector.classList.remove('active');
             }
         });
 
-        // 2. --- ESTA ES LA PARTE NUEVA ---
-        // Actualiza el texto y el icono del botón principal.
         if (activeLink) {
             const container = activeLink.closest('.selector-container');
             if (container) {
@@ -80,8 +74,7 @@ function initSettingsController() {
                     const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
                     const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
                     
-                    // Reconstruye el contenido del botón para que muestre la selección
-                    button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+                    button.innerHTML = `${iconHTML} <div class="menu-link-text">${textHTML}</div> ${arrowHTML}`;
                 }
             }
         }

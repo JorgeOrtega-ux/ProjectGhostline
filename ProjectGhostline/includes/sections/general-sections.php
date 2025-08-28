@@ -19,7 +19,9 @@
                 <div class="selector-container">
                     <button class="selector-button" data-action="toggleModuleSelector">
                         <span class="material-symbols-rounded">sync</span>
-                        <span data-translate-category="accessibility_page" data-translate="sync_system"></span>
+                        <div class="menu-link-text">
+                            <span data-translate-category="accessibility_page" data-translate="sync_system"></span>
+                        </div>
                         <span class="material-symbols-rounded">expand_more</span>
                     </button>
                     <div class="module-content module-selector disabled" data-module="moduleSelector">
@@ -37,7 +39,7 @@
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">dark_mode</span></div>
                                     <div class="menu-link-text"><span data-translate-category="accessibility_page" data-translate="dark_theme"></span></div>
                                 </div>
-                            </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -51,30 +53,49 @@
                 <div class="selector-container">
                     <button class="selector-button" data-action="toggleModuleSelector">
                         <span class="material-symbols-rounded">language</span>
-                        <span></span> <span class="material-symbols-rounded">expand_more</span>
+                        <div class="menu-link-text">
+                             <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="es"></span>
+                             <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="es"></span>
+                        </div>
+                        <span class="material-symbols-rounded">expand_more</span>
                     </button>
                     <div class="module-content module-selector disabled" data-module="moduleSelector">
                         <div class="menu-content">
                             <div class="menu-list">
                                 <div class="menu-link" data-lang-value="en">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span data-translate-category="languages" data-translate="en"></span></div>
+                                    <div class="menu-link-text">
+                                        <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="en"></span>
+                                        <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="en"></span>
+                                    </div>
                                 </div>
                                 <div class="menu-link" data-lang-value="es">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span data-translate-category="languages" data-translate="es"></span></div>
+                                    <div class="menu-link-text">
+                                        <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="es"></span>
+                                        <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="es"></span>
+                                    </div>
                                 </div>
                                 <div class="menu-link" data-lang-value="fr">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span data-translate-category="languages" data-translate="fr"></span></div>
+                                    <div class="menu-link-text">
+                                        <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="fr"></span>
+                                        <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="fr"></span>
+                                    </div>
                                 </div>
                                 <div class="menu-link" data-lang-value="de">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span data-translate-category="languages" data-translate="de"></span></div>
+                                    <div class="menu-link-text">
+                                        <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="de"></span>
+                                        <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="de"></span>
+                                    </div>
                                 </div>
                                 <div class="menu-link" data-lang-value="pt">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span data-translate-category="languages" data-translate="pt"></span></div>
+                                    <div class="menu-link-text">
+                                        <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="pt"></span>
+                                        <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="pt"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
