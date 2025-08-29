@@ -208,10 +208,10 @@
     }
   },
   "native_languages": {
-      "en": "English",
-      "es": "Español",
-      "fr": "Français",
-      "de": "Deutsch",
-      "pt": "Português"
+      "en": "English (United States)",
+      "es": "Español (Latinoamérica)",
+      "fr": "Français (France)",
+      "de": "Deutsch (Deutschland)",
+      "pt": "Português (Brasil)"
   }
 }

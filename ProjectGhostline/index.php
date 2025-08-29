@@ -20,7 +20,8 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
     <script>
         (function() {
             // --- Prevenir flash de tema ---
-            const savedTheme = localStorage.getItem('theme') || 'sync';
+            // CORRECCIÓN: Cambiamos 'theme' por 'selectedTheme'
+            const savedTheme = localStorage.getItem('selectedTheme') || 'sync';
             const htmlElement = document.documentElement;
 
             if (savedTheme === 'light') {
