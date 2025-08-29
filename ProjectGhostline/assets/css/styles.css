@@ -10,6 +10,7 @@
 :root {
     --body-bg: #f5f5fa;
     --content-bg: #ffffff;
+    --module-bg: #ffffff;
     --text-primary: #000000;
     --text-secondary: #5f6368;
     --text-interactive: #202124;
@@ -30,27 +31,28 @@
     --content-border-color: transparent;
 }
 
-body.theme-dark {
-    --body-bg: #18191b;
-    --content-bg: #252627;
-    --text-primary: #ffffff;
+html.theme-dark {
+    --body-bg: #252627;                 /* Fondo de main-content (más claro) */
+    --content-bg: #18191b;              /* Fondo de general-content (más oscuro) */
+    --module-bg: #252627;               /* Fondo de los módulos (igual que main-content) */
+    --text-primary: #e8eaed;
     --text-secondary: #a9aaac;
     --text-interactive: #e8eaed;
-    --border-color: #ffffff20;
-    --border-color-strong: #ffffff20;
-    --hover-bg: #ffffff20;
-    --active-bg: #ffffff20;
+    --border-color: #ffffff1a;
+    --border-color-strong: #3c4043;
+    --hover-bg: #ffffff1a;
+    --active-bg: #ffffff26;
     --shadow: none;
-    --content-border-color: #ffffff20;
+    --content-border-color: #3c4043;
     --scrollbar-color: #ffffff80;
     --toggle-slider-bg: #5f6368;
     --toggle-slider-checked-bg: #8ab4f8;
-    --toggle-slider-knob-bg: #252627;
-    --selector-button-bg: #252627;
-    --selector-button-border: #5f6368;
+    --toggle-slider-knob-bg: #18191b;   /* El knob del toggle debe coincidir con su fondo */
+    --selector-button-bg: #18191b;      /* El fondo del dropdown debe coincidir con su sección */
+    --selector-button-border: #3c4043;
     --selector-button-border-hover: #a9aaac;
     --selector-button-text: #e8eaed;
-    --header-button-border: #ffffff20;
+    --header-button-border: #3c4043;
 }
 
 
@@ -211,7 +213,7 @@ body {
     padding: 8px;
     gap: 0;
     color: var(--text-primary);
-    background-color: var(--content-bg);
+    background-color: var(--module-bg);
     border-radius: 12px;
     box-shadow: var(--shadow);
     border: 1px solid var(--content-border-color);
@@ -234,7 +236,7 @@ body {
     width: 280px;
     height: 100%;
     padding: 8px;
-    background-color: var(--content-bg);
+    background-color: var(--module-bg);
     box-shadow: var(--shadow);
     border: 1px solid var(--content-border-color);
     border-radius: 12px;
@@ -274,7 +276,7 @@ body {
     flex: 0 0 auto;
     flex-direction: row;
     width: 100%;
-    height: 40px; 
+    height: 40px;
     color: var(--text-primary);
     position: relative;
     border-radius: 8px;
@@ -298,7 +300,7 @@ body {
     flex: 1 1 auto;
     text-align: start;
     overflow: hidden;
-    line-height: 1.25; 
+    line-height: 1.25;
 }
 
 .menu-link-text-primary {
@@ -317,7 +319,7 @@ body {
     font-weight: 500;
 }
 
-.selector-button .menu-link-text {
+.selector-dropdown .menu-link-text {
     align-items: flex-start;
 }
 
@@ -479,14 +481,12 @@ body {
     position: relative;
 }
 
-.selector-button {
+.selector-dropdown {
     display: flex;
     align-items: center;
-    gap: 8px;
     background-color: var(--selector-button-bg);
     border: 1px solid var(--selector-button-border);
     border-radius: 8px;
-    padding: 10px 12px;
     font-size: 14px;
     cursor: pointer;
     color: var(--selector-button-text);
@@ -494,25 +494,39 @@ body {
     width: 100%;
     height: 40px;
     outline: none;
+    padding: 0;
 }
 
-.selector-button:hover {
+.selector-dropdown-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 100%;
+}
+
+.selector-dropdown-text {
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.selector-dropdown:hover {
     border-color: var(--selector-button-border-hover);
 }
 
-.selector-button:focus {
+.selector-dropdown:focus {
     border-color: var(--selector-button-border-hover);
 }
 
-.selector-button .menu-link-text {
+.selector-dropdown .menu-link-text {
     flex-grow: 1;
 }
 
-.selector-button .material-symbols-rounded:last-child {
+.selector-dropdown .material-symbols-rounded:last-child {
     transition: transform 0.2s ease-in-out;
 }
 
-.selector-button .arrow-rotated {
+.selector-dropdown .arrow-rotated {
     transform: rotate(180deg);
 }
 
@@ -526,7 +540,7 @@ body {
 }
 
 .module-selector .menu-content {
-    background-color: var(--content-bg);
+    background-color: var(--module-bg);
     border-radius: 12px;
     box-shadow: var(--shadow);
     border: 1px solid var(--content-border-color);

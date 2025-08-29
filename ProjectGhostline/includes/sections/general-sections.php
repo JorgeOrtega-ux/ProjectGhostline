@@ -17,13 +17,19 @@
                     <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="theme_description"></span>
                 </div>
                 <div class="selector-container">
-                    <button class="selector-button" data-action="toggleModuleSelector">
-                        <span class="material-symbols-rounded">sync</span>
-                        <div class="menu-link-text">
-                            <span data-translate-category="accessibility_page" data-translate="sync_system"></span>
+                    <div class="selector-dropdown" data-action="toggleModuleSelector" tabindex="0">
+                        <div class="selector-dropdown-icon">
+                            <span class="material-symbols-rounded">sync</span>
                         </div>
-                        <span class="material-symbols-rounded">expand_more</span>
-                    </button>
+                        <div class="selector-dropdown-text">
+                            <div class="menu-link-text">
+                                <span data-translate-category="accessibility_page" data-translate="sync_system"></span>
+                            </div>
+                        </div>
+                        <div class="selector-dropdown-icon">
+                            <span class="material-symbols-rounded">expand_more</span>
+                        </div>
+                    </div>
                     <div class="module-content module-selector disabled" data-module="moduleSelector">
                         <div class="menu-content">
                             <div class="menu-list">
@@ -51,14 +57,20 @@
                     <span class="settings-card-description" data-translate-category="accessibility_page" data-translate="language_description"></span>
                 </div>
                 <div class="selector-container">
-                    <button class="selector-button" data-action="toggleModuleSelector">
-                        <span class="material-symbols-rounded">language</span>
-                        <div class="menu-link-text">
-                             <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="es"></span>
-                             <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="es"></span>
+                    <div class="selector-dropdown" data-action="toggleModuleSelector" tabindex="0">
+                        <div class="selector-dropdown-icon">
+                             <span class="material-symbols-rounded">language</span>
                         </div>
-                        <span class="material-symbols-rounded">expand_more</span>
-                    </button>
+                        <div class="selector-dropdown-text">
+                            <div class="menu-link-text">
+                                 <span class="menu-link-text-primary" data-translate-category="native_languages" data-translate="es"></span>
+                                 <span class="menu-link-text-secondary" data-translate-category="languages" data-translate="es"></span>
+                            </div>
+                        </div>
+                        <div class="selector-dropdown-icon">
+                            <span class="material-symbols-rounded">expand_more</span>
+                        </div>
+                    </div>
                     <div class="module-content module-selector disabled" data-module="moduleSelector">
                         <div class="menu-content">
                             <div class="menu-list">

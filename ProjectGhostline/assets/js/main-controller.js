@@ -183,7 +183,7 @@ function initMainController() {
                     const container = m.closest('.selector-container');
                     if (container) {
                         const button = container.querySelector('[data-action="toggleModuleSelector"]');
-                        const arrowIcon = button.querySelector('.material-symbols-rounded:last-child');
+                        const arrowIcon = button.querySelector('.selector-dropdown-icon:last-child .material-symbols-rounded');
                         if (arrowIcon) {
                             arrowIcon.classList.remove('arrow-rotated');
                         }
@@ -212,7 +212,7 @@ function initMainController() {
         module.classList.toggle('disabled', isModuleActive);
         module.classList.toggle('active', !isModuleActive);
         
-        const arrowIcon = button.querySelector('.material-symbols-rounded:last-child');
+        const arrowIcon = button.querySelector('.selector-dropdown-icon:last-child .material-symbols-rounded');
         if (arrowIcon) {
             arrowIcon.classList.toggle('arrow-rotated', !isModuleActive);
         }
@@ -226,7 +226,7 @@ function initMainController() {
         const container = selectedLink.closest('.selector-container');
         if (!container) return;
     
-        const button = container.querySelector('.selector-button');
+        const dropdown = container.querySelector('.selector-dropdown');
         const module = container.querySelector('[data-module="moduleSelector"]');
         const allLinks = module.querySelectorAll('.menu-link');
     
@@ -234,13 +234,15 @@ function initMainController() {
         const textHTML = selectedLink.querySelector('.menu-link-text').innerHTML;
         const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
     
-        button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
-    
+        dropdown.querySelector('.selector-dropdown-icon:first-child').innerHTML = iconHTML;
+        dropdown.querySelector('.selector-dropdown-text').innerHTML = `<div class="menu-link-text">${textHTML}</div>`;
+        dropdown.querySelector('.selector-dropdown-icon:last-child').innerHTML = arrowHTML;
+
         allLinks.forEach(link => link.classList.remove('active'));
         selectedLink.classList.add('active');
     
         closeAllActiveModules();
-        button.blur();
+        dropdown.blur();
     }
 
     // --- Event Listeners ---

@@ -24,16 +24,16 @@ $isHelpMenu = ($CURRENT_SECTION === 'help');
             const htmlElement = document.documentElement;
 
             if (savedTheme === 'light') {
-                htmlElement.classList.add('light-theme');
+                htmlElement.classList.add('theme-light');
             } else if (savedTheme === 'dark') {
-                htmlElement.classList.add('dark-theme');
+                htmlElement.classList.add('theme-dark');
             } else if (savedTheme === 'sync') {
                 // Detectar tema del sistema
                 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 if (prefersDark) {
-                    htmlElement.classList.add('dark-theme');
+                    htmlElement.classList.add('theme-dark');
                 } else {
-                    htmlElement.classList.add('light-theme');
+                    htmlElement.classList.add('theme-light');
                 }
             }
 

@@ -31,13 +31,13 @@ function initSettingsController() {
         if (activeLink) {
             const container = activeLink.closest('.selector-container');
             if (container) {
-                const button = container.querySelector('.selector-button');
-                if (button) {
+                const dropdown = container.querySelector('.selector-dropdown');
+                if (dropdown) {
                     const iconHTML = activeLink.querySelector('.menu-link-icon').innerHTML;
                     const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
-                    const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
                     
-                    button.innerHTML = `${iconHTML} ${textHTML} ${arrowHTML}`;
+                    dropdown.querySelector('.selector-dropdown-icon:first-child').innerHTML = iconHTML;
+                    dropdown.querySelector('.selector-dropdown-text').innerHTML = `<div class="menu-link-text">${textHTML}</div>`;
                 }
             }
         }
@@ -68,13 +68,13 @@ function initSettingsController() {
         if (activeLink) {
             const container = activeLink.closest('.selector-container');
             if (container) {
-                const button = container.querySelector('.selector-button');
-                if (button) {
+                const dropdown = container.querySelector('.selector-dropdown');
+                if (dropdown) {
                     const iconHTML = activeLink.querySelector('.menu-link-icon').innerHTML;
                     const textHTML = activeLink.querySelector('.menu-link-text').innerHTML;
-                    const arrowHTML = `<span class="material-symbols-rounded">expand_more</span>`;
                     
-                    button.innerHTML = `${iconHTML} <div class="menu-link-text">${textHTML}</div> ${arrowHTML}`;
+                    dropdown.querySelector('.selector-dropdown-icon:first-child').innerHTML = iconHTML;
+                    dropdown.querySelector('.selector-dropdown-text').innerHTML = `<div class="menu-link-text">${textHTML}</div>`;
                 }
             }
         }
