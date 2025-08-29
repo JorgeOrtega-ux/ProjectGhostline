@@ -4,6 +4,7 @@ import {
     setupPopStateHandler,
     setInitialHistoryState
 } from './url-manager.js';
+import { translatePage } from './language-manager.js';
 
 function initMainController() {
     initUrlManager();
@@ -241,6 +242,16 @@ function initMainController() {
         allLinks.forEach(link => link.classList.remove('active'));
         selectedLink.classList.add('active');
     
+        // --- INICIO DE LA MODIFICACIÓN ---
+        const sortKey = selectedLink.dataset.sortKey;
+        const categoryTitle = document.querySelector('.category-title');
+        if (categoryTitle && sortKey) {
+            categoryTitle.dataset.translate = sortKey;
+            const currentLanguage = localStorage.getItem('selectedLanguage') || 'es';
+            translatePage(currentLanguage);
+        }
+        // --- FIN DE LA MODIFICACIÓN ---
+
         closeAllActiveModules();
         dropdown.blur();
     }

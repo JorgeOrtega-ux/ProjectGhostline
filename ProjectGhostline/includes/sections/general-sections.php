@@ -1,3 +1,20 @@
+<?php
+require_once 'config/db.php';
+
+// Contar el total de usuarios
+$total_users_result = $conn->query("SELECT COUNT(id) as total FROM users");
+$total_users_row = $total_users_result->fetch_assoc();
+$total_users = (int)$total_users_row['total'];
+
+// Obtener el lote inicial de usuarios
+$limit = 25;
+$sql = "SELECT uuid, nombre FROM users LIMIT ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $limit);
+$stmt->execute();
+$result = $stmt->get_result();
+
+?>
 <div class="section-wrapper <?php echo $isMainMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperMain">
     <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome">
         <div class="home-top-container">
@@ -22,23 +39,23 @@
                 <div class="module-content module-selector disabled" data-module="moduleSelector">
                     <div class="menu-content">
                         <div class="menu-list">
-                            <div class="menu-link active">
+                            <div class="menu-link active" data-sort-key="most_relevant">
                                 <div class="menu-link-icon"><span class="material-symbols-rounded">swap_vert</span></div>
                                 <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="most_relevant"></span></div>
                             </div>
-                            <div class="menu-link">
+                            <div class="menu-link" data-sort-key="recent_edits">
                                 <div class="menu-link-icon"><span class="material-symbols-rounded">schedule</span></div>
                                 <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="recent_edits"></span></div>
                             </div>
-                            <div class="menu-link">
+                            <div class="menu-link" data-sort-key="oldest_edits">
                                 <div class="menu-link-icon"><span class="material-symbols-rounded">history</span></div>
                                 <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="oldest_edits"></span></div>
                             </div>
-                            <div class="menu-link">
+                            <div class="menu-link" data-sort-key="order_az">
                                 <div class="menu-link-icon"><span class="material-symbols-rounded">sort_by_alpha</span></div>
                                 <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="order_az"></span></div>
                             </div>
-                            <div class="menu-link">
+                            <div class="menu-link" data-sort-key="order_za">
                                 <div class="menu-link-icon"><span class="material-symbols-rounded">sort_by_alpha</span></div>
                                 <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="order_za"></span></div>
                             </div>
@@ -51,68 +68,28 @@
             <div class="categories-wrapper">
                 <div class="category-section">
                     <div class="category-header">
-                        <h3 class="category-title">SECCION 1 DE USUARIO ASIGNADOS A UNA CATEGORIA</h3>
+                        <h3 class="category-title" data-translate-category="category_titles" data-translate="most_relevant"></h3>
                     </div>
                     <div class="category-grid-container">
                         <div class="cards-grid">
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
+                            <?php if ($result->num_rows > 0): ?>
+                                <?php while($row = $result->fetch_assoc()): ?>
+                                    <div class="card">
+                                        <div class="card-user-info">
+                                            <div class="user-avatar-placeholder"></div>
+                                            <span class="user-name"><?php echo htmlspecialchars($row["nombre"]); ?></span>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <p>No users found.</p>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                </div>
-                <div class="category-section">
-                     <div class="category-header">
-                        <h3 class="category-title">SECCION 1 DE USUARIO ASIGNADOS A UNA CATEGORIA</h3>
-                    </div>
-                    <div class="category-grid-container">
-                        <div class="cards-grid">
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-user-info">
-                                    <div class="user-avatar-placeholder"></div>
-                                    <span class="user-name">Nombre de usuario</span>
-                                </div>
-                            </div>
+                        <?php if ($total_users > $limit): ?>
+                        <div class="load-more-container">
+                            <button id="loadMoreUsers" class="load-more-button" data-total="<?php echo $total_users; ?>">Mostrar más</button>
                         </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -279,3 +256,7 @@
     <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'cookies') ? 'active' : 'disabled'; ?>" data-section="sectionCookies"></div>
     <div class="section-container <?php echo ($CURRENT_SUBSECTION === 'feedback') ? 'active' : 'disabled'; ?>" data-section="sectionFeedback"></div>
 </div>
+<?php
+$stmt->close();
+$conn->close();
+?>

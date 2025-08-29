@@ -239,5 +239,22 @@
     "order_za": {
       "es": "Ordenar de la Z-A"
     }
+  },
+  "category_titles": {
+    "most_relevant": {
+      "es": "Usuarios más relevantes del momento"
+    },
+    "recent_edits": {
+      "es": "Usuarios con ediciones recientes"
+    },
+    "oldest_edits": {
+      "es": "Usuarios con ediciones antiguas"
+    },
+    "order_az": {
+      "es": "Usuarios ordenados de la A a la Z"
+    },
+    "order_za": {
+      "es": "Usuarios ordenados de la Z a la A"
+    }
   }
 }
