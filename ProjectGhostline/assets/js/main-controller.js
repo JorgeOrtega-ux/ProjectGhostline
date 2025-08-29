@@ -246,6 +246,15 @@ function initMainController() {
     }
 
     // --- Event Listeners ---
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 64) {
+                this.value = this.value.slice(0, 64);
+            }
+        });
+    }
+
     buttons.forEach(button => {
         button.addEventListener('click', function(event) {
             event.stopPropagation();

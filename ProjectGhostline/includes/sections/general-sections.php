@@ -1,5 +1,123 @@
 <div class="section-wrapper <?php echo $isMainMenu ? 'active' : 'disabled'; ?>" data-wrapper="wrapperMain">
-    <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome"></div>
+    <div class="section-container <?php echo ($CURRENT_SECTION === 'home') ? 'active' : 'disabled'; ?>" data-section="sectionHome">
+        <div class="home-top-container">
+            <div class="search-container">
+                <span class="material-symbols-rounded search-icon">search</span>
+                <input type="text" class="search-input" placeholder="Buscar usuarios" maxlength="64">
+            </div>
+            <div class="selector-container">
+                <div class="selector-dropdown" data-action="toggleModuleSelector" tabindex="0">
+                    <div class="selector-dropdown-icon">
+                        <span class="material-symbols-rounded">swap_vert</span>
+                    </div>
+                    <div class="selector-dropdown-text">
+                        <div class="menu-link-text">
+                            <span data-translate-category="sort_options" data-translate="most_relevant"></span>
+                        </div>
+                    </div>
+                    <div class="selector-dropdown-icon">
+                        <span class="material-symbols-rounded">expand_more</span>
+                    </div>
+                </div>
+                <div class="module-content module-selector disabled" data-module="moduleSelector">
+                    <div class="menu-content">
+                        <div class="menu-list">
+                            <div class="menu-link active">
+                                <div class="menu-link-icon"><span class="material-symbols-rounded">swap_vert</span></div>
+                                <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="most_relevant"></span></div>
+                            </div>
+                            <div class="menu-link">
+                                <div class="menu-link-icon"><span class="material-symbols-rounded">schedule</span></div>
+                                <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="recent_edits"></span></div>
+                            </div>
+                            <div class="menu-link">
+                                <div class="menu-link-icon"><span class="material-symbols-rounded">history</span></div>
+                                <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="oldest_edits"></span></div>
+                            </div>
+                            <div class="menu-link">
+                                <div class="menu-link-icon"><span class="material-symbols-rounded">sort_by_alpha</span></div>
+                                <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="order_az"></span></div>
+                            </div>
+                            <div class="menu-link">
+                                <div class="menu-link-icon"><span class="material-symbols-rounded">sort_by_alpha</span></div>
+                                <div class="menu-link-text"><span data-translate-category="sort_options" data-translate="order_za"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="home-bottom-container">
+            <div class="categories-wrapper">
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3 class="category-title">SECCION 1 DE USUARIO ASIGNADOS A UNA CATEGORIA</h3>
+                    </div>
+                    <div class="category-grid-container">
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="category-section">
+                     <div class="category-header">
+                        <h3 class="category-title">SECCION 1 DE USUARIO ASIGNADOS A UNA CATEGORIA</h3>
+                    </div>
+                    <div class="category-grid-container">
+                        <div class="cards-grid">
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-user-info">
+                                    <div class="user-avatar-placeholder"></div>
+                                    <span class="user-name">Nombre de usuario</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="section-container <?php echo ($CURRENT_SECTION === 'explore') ? 'active' : 'disabled'; ?>" data-section="sectionExplore"></div>
     <div class="section-container <?php echo ($CURRENT_SECTION === 'trash') ? 'active' : 'disabled'; ?>" data-section="sectionTrash"></div>
 </div>

@@ -222,5 +222,22 @@
       "fr": "Français (France)",
       "de": "Deutsch (Deutschland)",
       "pt": "Português (Brasil)"
+  },
+  "sort_options": {
+    "most_relevant": {
+      "es": "Más relevante"
+    },
+    "recent_edits": {
+      "es": "Ediciones más recientes"
+    },
+    "oldest_edits": {
+      "es": "Ediciones más antiguas"
+    },
+    "order_az": {
+      "es": "Ordenar de la A-Z"
+    },
+    "order_za": {
+      "es": "Ordenar de la Z-A"
+    }
   }
 }
