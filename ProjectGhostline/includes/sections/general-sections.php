@@ -8,7 +8,7 @@ $total_users = (int)$total_users_row['total'];
 
 // Obtener el lote inicial de usuarios, ordenado por más relevante (más likes)
 $limit = 25;
-$sql = "SELECT u.uuid, u.nombre FROM users u
+$sql = "SELECT u.uuid, u.nombre, ud.current_rank, ud.previous_rank FROM users u
         INNER JOIN users_data ud ON u.uuid = ud.user_uuid
         ORDER BY ud.likes DESC
         LIMIT ?";
@@ -76,14 +76,40 @@ $result = $stmt->get_result();
                     <div class="category-grid-container">
                         <div class="cards-grid">
                             <?php if ($result->num_rows > 0): ?>
-                                <?php while($row = $result->fetch_assoc()): ?>
+                                <?php 
+                                    $rank_counter = 1;
+                                    while($row = $result->fetch_assoc()): 
+                                ?>
                                     <div class="card">
+                                        <?php
+                                            $rank_status = 'same';
+                                            $rank_icon = 'remove';
+                                            
+                                            if ($row['current_rank'] > 0 && $row['previous_rank'] > 0) {
+                                                if ($row['current_rank'] < $row['previous_rank']) {
+                                                    $rank_status = 'up';
+                                                    $rank_icon = 'trending_up';
+                                                } elseif ($row['current_rank'] > $row['previous_rank']) {
+                                                    $rank_status = 'down';
+                                                    $rank_icon = 'trending_down';
+                                                }
+                                            }
+                                        ?>
+                                        <div class="card-rank">
+                                            <span class="rank-number"><?php echo $rank_counter; ?></span>
+                                            <div class="rank-badge <?php echo $rank_status; ?>">
+                                                <span class="material-symbols-rounded"><?php echo $rank_icon; ?></span>
+                                            </div>
+                                        </div>
                                         <div class="card-user-info">
                                             <div class="user-avatar-placeholder"></div>
                                             <span class="user-name"><?php echo htmlspecialchars($row["nombre"]); ?></span>
                                         </div>
                                     </div>
-                                <?php endwhile; ?>
+                                <?php 
+                                    $rank_counter++;
+                                    endwhile; 
+                                ?>
                             <?php else: ?>
                                 <p>No users found.</p>
                             <?php endif; ?>
