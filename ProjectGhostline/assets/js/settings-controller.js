@@ -3,6 +3,16 @@ import { translatePage } from './language-manager.js';
 function initSettingsController() {
     const themeSelectors = document.querySelectorAll('[data-theme-value]');
     const languageSelectors = document.querySelectorAll('[data-lang-value]');
+    const openLinksToggle = document.getElementById('openLinksInNewTabToggle');
+
+    // --- MAPA DE IDIOMAS ---
+    const languageMap = {
+        en: 'en-US',
+        es: 'es-419', // CORREGIDO: Código oficial para Español de Latinoamérica
+        fr: 'fr-FR',
+        de: 'de-DE',
+        pt: 'pt-BR'
+    };
 
     // --- LÓGICA DEL TEMA ---
     function applyTheme(preference) {
@@ -80,6 +90,19 @@ function initSettingsController() {
         }
     }
 
+    // --- LÓGICA DE ABRIR ENLACES ---
+    function setOpenLinksInNewTab(isChecked) {
+        localStorage.setItem('openLinksInNewTab', isChecked);
+    }
+
+    function loadOpenLinksInNewTab() {
+        const savedState = localStorage.getItem('openLinksInNewTab');
+        const initialState = savedState === null ? true : (savedState === 'true');
+        if (openLinksToggle) {
+            openLinksToggle.checked = initialState;
+        }
+    }
+
     // --- INICIALIZACIÓN Y EVENTOS ---
     themeSelectors.forEach(selector => {
         selector.addEventListener('click', function() {
@@ -92,6 +115,12 @@ function initSettingsController() {
             setLanguage(this.dataset.langValue);
         });
     });
+
+    if (openLinksToggle) {
+        openLinksToggle.addEventListener('change', function() {
+            setOpenLinksInNewTab(this.checked);
+        });
+    }
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         const currentPreference = localStorage.getItem('selectedTheme');
@@ -106,6 +135,15 @@ function initSettingsController() {
 
     const savedLanguage = localStorage.getItem('selectedLanguage') || 'es';
     setLanguage(savedLanguage);
+    
+    loadOpenLinksInNewTab();
+
+    // --- MOSTRAR EN CONSOLA ---
+    const languageWithCountry = languageMap[savedLanguage] || savedLanguage;
+    console.log('Tema actual:', savedTheme);
+    console.log('Idioma actual:', languageWithCountry);
+    console.log('Abrir enlaces en nueva pestaña:', openLinksToggle ? openLinksToggle.checked : 'Elemento no encontrado');
+
 }
 
 export { initSettingsController };

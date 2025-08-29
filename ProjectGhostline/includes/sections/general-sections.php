@@ -138,7 +138,7 @@
                 <div class="about-body">
                     <div class="about-version-info">
                         <span class="material-symbols-rounded">verified</span>
-                        <span></span>
+                        <span data-translate-category="about_page" data-translate="version"></span>
                     </div>
                     <ul class="about-links-list">
                         <li class="about-link-item" data-action="toggleSectionPrivacyPolicy">
@@ -146,7 +146,7 @@
                             <span class="material-symbols-rounded">open_in_new</span>
                         </li>
                         <li class="about-link-item" data-action="toggleSectionFeedback">
-                            <span></span>
+                            <span data-translate-category="help_menu" data-translate="feedback"></span>
                             <span class="material-symbols-rounded">open_in_new</span>
                         </li>
                     </ul>
