@@ -116,6 +116,7 @@ body {
     position: relative;
     display: flex;
     flex: 1 1 auto;
+    width: 100%;
     flex-direction: column;
     background-color: var(--content-bg);
     border-radius: 12px;
@@ -317,7 +318,19 @@ body {
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
+    
     text-overflow: ellipsis;
+}
+
+/* Localiza esta regla en tu archivo (aproximadamente en la línea 1104) 
+  y reemplázala con el código de abajo.
+*/
+
+.menu-link-text-primary,
+.menu-link-text-secondary {
+    width: 100%;
+   
+  
 }
 
 .menu-link-text > span:only-child {
@@ -512,6 +525,7 @@ body {
     align-items: center;
     width: 45px;
     height: 100%;
+    flex-shrink: 0;
 }
 
 .selector-dropdown-text {
