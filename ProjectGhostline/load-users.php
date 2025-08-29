@@ -1,22 +1,69 @@
 <?php
-// La ruta ahora es correcta porque este archivo está en la raíz 
-// y necesita entrar a la carpeta 'config'.
+// Establecer la cabecera para indicar que la respuesta es JSON
+header('Content-Type: application/json');
+
 require_once 'config/db.php';
 
-// Obtenemos el offset de la URL, asegurando que sea un entero.
+// Sanitizar y obtener los parámetros de la URL.
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+$sort_key = isset($_GET['sort_key']) ? htmlspecialchars($_GET['sort_key']) : 'most_relevant';
+$search_query = isset($_GET['search_query']) ? trim(htmlspecialchars($_GET['search_query'])) : '';
 $limit = 25; // Número de usuarios a cargar.
 
-// Preparamos y ejecutamos la consulta de forma segura.
-$sql = "SELECT uuid, nombre FROM users LIMIT ?, ?";
+// --- Lógica de Conteo Total ---
+$count_sql = "SELECT COUNT(u.id) as total FROM users u
+              INNER JOIN users_data ud ON u.uuid = ud.user_uuid";
+$count_params = [];
+$count_types = '';
+
+if (!empty($search_query)) {
+    $count_sql .= " WHERE u.nombre LIKE ?";
+    $count_params[] = "%" . $search_query . "%";
+    $count_types .= 's';
+}
+
+$count_stmt = $conn->prepare($count_sql);
+if (!empty($search_query)) {
+    $count_stmt->bind_param($count_types, ...$count_params);
+}
+$count_stmt->execute();
+$count_result = $count_stmt->get_result()->fetch_assoc();
+$total_users = (int)$count_result['total'];
+$count_stmt->close();
+
+// --- Lógica de Obtención de Usuarios ---
+$allowed_sort_keys = [
+    'most_relevant' => 'ud.likes DESC',
+    'recent_edits' => 'ud.reg_date DESC',
+    'oldest_edits' => 'ud.reg_date ASC',
+    'order_az' => 'u.nombre ASC',
+    'order_za' => 'u.nombre DESC'
+];
+$order_by = $allowed_sort_keys[$sort_key] ?? $allowed_sort_keys['most_relevant'];
+
+$sql = "SELECT u.uuid, u.nombre FROM users u
+        INNER JOIN users_data ud ON u.uuid = ud.user_uuid";
+$params = [];
+$types = '';
+
+if (!empty($search_query)) {
+    $sql .= " WHERE u.nombre LIKE ?";
+    $params[] = "%" . $search_query . "%";
+    $types .= 's';
+}
+
+$sql .= " ORDER BY $order_by LIMIT ?, ?";
+$params[] = $offset;
+$params[] = $limit;
+$types .= 'ii';
+
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $offset, $limit);
+$stmt->bind_param($types, ...$params);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $html = '';
 if ($result->num_rows > 0) {
-    // Generamos únicamente el HTML para las nuevas tarjetas.
     while($row = $result->fetch_assoc()) {
         $html .= '<div class="card">';
         $html .= '    <div class="card-user-info">';
@@ -27,13 +74,14 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Cerramos las conexiones.
 $stmt->close();
 $conn->close();
 
-// Devolvemos solo el HTML de las tarjetas.
-echo $html;
+// Devolver un objeto JSON con el HTML y el conteo total.
+echo json_encode([
+    'html' => $html,
+    'total_count' => $total_users
+]);
 
-// Detenemos la ejecución para no enviar contenido extra.
 exit;
 ?>

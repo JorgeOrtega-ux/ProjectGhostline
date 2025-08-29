@@ -920,3 +920,33 @@ body {
         width: 100%;
     }
 }
+
+/* --- INICIO: ESTILOS PARA MENSAJE "SIN RESULTADOS" --- */
+.no-results-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 48px 24px;
+    text-align: center;
+    gap: 12px;
+}
+
+.no-results-message .material-symbols-rounded {
+    font-size: 48px;
+    color: var(--text-secondary);
+}
+
+.no-results-message p {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.no-results-message b {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+/* --- FIN: ESTILOS PARA MENSAJE "SIN RESULTADOS" --- */

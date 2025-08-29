@@ -6,9 +6,12 @@ $total_users_result = $conn->query("SELECT COUNT(id) as total FROM users");
 $total_users_row = $total_users_result->fetch_assoc();
 $total_users = (int)$total_users_row['total'];
 
-// Obtener el lote inicial de usuarios
+// Obtener el lote inicial de usuarios, ordenado por más relevante (más likes)
 $limit = 25;
-$sql = "SELECT uuid, nombre FROM users LIMIT ?";
+$sql = "SELECT u.uuid, u.nombre FROM users u
+        INNER JOIN users_data ud ON u.uuid = ud.user_uuid
+        ORDER BY ud.likes DESC
+        LIMIT ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $limit);
 $stmt->execute();
