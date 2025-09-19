@@ -13,6 +13,9 @@ export function initMainController() {
     console.log("Fotos favoritas guardadas:");
     console.table(getFavorites());
 
+    let currentAppView = null;
+    let currentAppSection = null;
+
     let currentView = 'grid';
     let currentSortBy = 'relevant';
     let searchDebounceTimer;
@@ -402,10 +405,6 @@ export function initMainController() {
             });
     }
 
-    /**
-     * CORRECCIÓN CLAVE: Esta función ahora solo obtiene y renderiza las fotos.
-     * Asume que la plantilla de la sección ya ha sido cargada por handleStateChange.
-     */
     function fetchAndDisplayGalleryPhotos(uuid, galleryName, append = false) {
         const section = document.querySelector('[data-section="galleryPhotos"]');
         if (!section) return;
@@ -612,82 +611,68 @@ export function initMainController() {
         });
     }
 
-    async function displayPhoto(uuid, photoId, photoList = null) {
-        await handleStateChange('main', 'photoView', { uuid: uuid, photoId: photoId });
-    
+    function renderPhotoView(uuid, photoId, photoList) {
         const photoViewerImage = document.getElementById('photo-viewer-image');
         const photoCounter = document.getElementById('photo-counter');
         const photoViewUserTitle = document.getElementById('photo-view-user-title');
         const prevButton = document.querySelector('[data-action="previous-photo"]');
         const nextButton = document.querySelector('[data-action="next-photo"]');
-        
+    
+        if (!photoViewerImage) {
+            console.error("Photo viewer elements not found in the DOM.");
+            return;
+        }
+    
         incrementPhotoInteraction(photoId);
     
-        const displayFetchedPhoto = (list) => {
-            const photoIndex = list.findIndex(p => p.id == photoId);
-            if (photoIndex !== -1) {
-                const photo = list[photoIndex];
+        const photoIndex = photoList.findIndex(p => p.id == photoId);
     
+        if (photoIndex !== -1) {
+            const photo = photoList[photoIndex];
+    
+            // Función para actualizar el nombre de la galería si es necesario
+            const updateGalleryName = () => {
                 if (photo.gallery_name) {
                     currentGalleryNameForPhotoView = photo.gallery_name;
-                    if(photoViewUserTitle) photoViewUserTitle.textContent = photo.gallery_name;
-                } else if (currentGalleryForPhotoView !== uuid) {
-                    fetchAndSetGalleryName(uuid);
-                } else if (currentGalleryNameForPhotoView) {
-                    if(photoViewUserTitle) photoViewUserTitle.textContent = currentGalleryNameForPhotoView;
                 }
+                if (photoViewUserTitle && currentGalleryNameForPhotoView) {
+                    photoViewUserTitle.textContent = currentGalleryNameForPhotoView;
+                } else {
+                    // Si no tenemos nombre, lo buscamos
+                    fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=galleries&uuid=${uuid}`)
+                        .then(res => res.json())
+                        .then(gallery => {
+                            if (gallery && gallery.name) {
+                                currentGalleryNameForPhotoView = gallery.name;
+                                if(photoViewUserTitle) photoViewUserTitle.textContent = gallery.name;
+                            }
+                        });
+                }
+            };
+            
+            updateGalleryName();
     
-                currentPhotoData = {
-                    id: photo.id,
-                    gallery_uuid: uuid,
-                    photo_url: photo.photo_url,
-                    gallery_name: photo.gallery_name || currentGalleryNameForPhotoView,
-                    profile_picture_url: photo.profile_picture_url
-                };
+            currentPhotoData = {
+                id: photo.id,
+                gallery_uuid: uuid,
+                photo_url: photo.photo_url,
+                gallery_name: photo.gallery_name || currentGalleryNameForPhotoView,
+                profile_picture_url: photo.profile_picture_url
+            };
     
-                if(photoViewerImage) photoViewerImage.src = photo.photo_url;
-                if(photoCounter) photoCounter.textContent = `${photoIndex + 1} / ${list.length}`;
-                currentGalleryForPhotoView = uuid;
+            photoViewerImage.src = photo.photo_url;
+            photoCounter.textContent = `${photoIndex + 1} / ${photoList.length}`;
+            currentGalleryForPhotoView = uuid;
     
-                updateFavoriteButtonState(photo.id);
+            updateFavoriteButtonState(photo.id);
     
-                if(prevButton) prevButton.classList.toggle('disabled-nav', photoIndex === 0);
-                if(nextButton) nextButton.classList.toggle('disabled-nav', photoIndex === list.length - 1);
-            } else {
-                handleStateChange('main', '404', null);
-            }
-        };
-    
-        const fetchAndSetGalleryName = (galleryUuid) => {
-            fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=galleries&uuid=${galleryUuid}`)
-                .then(res => res.json())
-                .then(gallery => {
-                    if (gallery && gallery.name) {
-                        currentGalleryNameForPhotoView = gallery.name;
-                        if(photoViewUserTitle) photoViewUserTitle.textContent = gallery.name;
-                    }
-                });
-        };
-    
-        let currentList = currentGalleryPhotoList;
-        if (lastVisitedView === 'trends') {
-            currentList = currentTrendingPhotosList;
-        }
-    
-        if (photoList) {
-            displayFetchedPhoto(photoList);
-            currentGalleryPhotoList = photoList;
-        } else if (currentList.length === 0 || currentGalleryForPhotoView !== uuid) {
-            fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=photos&uuid=${uuid}&limit=1000`)
-                .then(res => res.json())
-                .then(photos => {
-                    currentGalleryPhotoList = photos;
-                    displayFetchedPhoto(photos);
-                });
+            if(prevButton) prevButton.classList.toggle('disabled-nav', photoIndex === 0);
+            if(nextButton) nextButton.classList.toggle('disabled-nav', photoIndex === photoList.length - 1);
         } else {
-            displayFetchedPhoto(currentList);
+            console.error("Photo not found in list, navigating to 404.");
+            handleStateChange('main', '404');
         }
-    }
+    }    
 
     function incrementInteraction(uuid) {
         const formData = new FormData();
@@ -835,14 +820,17 @@ export function initMainController() {
                         if (moduleSurface) moduleSurface.classList.toggle('disabled');
                         break;
                     case 'toggleSettings':
+                        if (currentAppView === 'settings' && currentAppSection === 'accessibility') return;
                         navigateToUrl('settings', 'accessibility');
                         handleStateChange('settings', 'accessibility');
                         break;
                     case 'toggleHelp':
+                        if (currentAppView === 'help' && currentAppSection === 'privacyPolicy') return;
                         navigateToUrl('help', 'privacyPolicy');
                         handleStateChange('help', 'privacyPolicy');
                         break;
                     case 'toggleMainView':
+                        if (currentAppView === 'main' && currentAppSection === 'home') return;
                         navigateToUrl('main', 'home');
                         handleStateChange('main', 'home');
                         break;
@@ -858,6 +846,7 @@ export function initMainController() {
                         const targetSection = sectionName.charAt(0).toLowerCase() + sectionName.slice(1);
                         const parentMenu = actionTarget.closest('[data-menu]');
                         const targetView = parentMenu ? parentMenu.dataset.menu : 'main';
+                        if (currentAppView === targetView && currentAppSection === targetSection) return;
                         navigateToUrl(targetView, targetSection);
                         handleStateChange(targetView, targetSection);
                         break;
@@ -876,9 +865,21 @@ export function initMainController() {
                         }
                         break;
                     case 'returnToUserPhotos':
+                        if (currentGalleryForPhotoView) {
+                            navigateToUrl('main', 'galleryPhotos', { uuid: currentGalleryForPhotoView });
+                            handleStateChange('main', 'galleryPhotos', { uuid: currentGalleryForPhotoView });
+                        } else {
+                            navigateToUrl('main', 'home');
+                            handleStateChange('main', 'home');
+                        }
+                        break;
                     case 'returnToHome':
+                         navigateToUrl('main', 'home');
+                         handleStateChange('main', 'home');
+                         break;
                     case 'returnToFavorites':
-                        window.history.back();
+                        navigateToUrl('main', 'favorites');
+                        handleStateChange('main', 'favorites');
                         break;
                     case 'toggle-favorite':
                         if (currentPhotoData) toggleFavorite(currentPhotoData);
@@ -919,7 +920,8 @@ export function initMainController() {
                                 if (nextIndex >= 0 && nextIndex < listToUse.length) {
                                     const nextPhoto = listToUse[nextIndex];
                                     navigateToUrl('main', 'photoView', { uuid: nextPhoto.gallery_uuid, photoId: nextPhoto.id });
-                                    displayPhoto(nextPhoto.gallery_uuid, nextPhoto.id, listToUse);
+                                    // La lógica de renderizado ahora está en handleStateChange, así que lo llamamos.
+                                    handleStateChange('main', 'photoView', { uuid: nextPhoto.gallery_uuid, photoId: nextPhoto.id });
                                 }
                             }
                         }
@@ -1018,7 +1020,7 @@ export function initMainController() {
                 }
             }
 
-            // --- MANEJAR SELECCIÓN DE OPCIONES EN MENÚS DESPLEGABLES ---
+            // --- MANEJAR SELECCIÓN DE OPCIONES EN MENÚS DESPLEGables ---
             const selectedOption = event.target.closest('.module-select .menu-link');
             if (selectedOption) {
                 const selectContainer = selectedOption.closest('.module-select');
@@ -1042,6 +1044,7 @@ export function initMainController() {
                         currentFavoritesSortBy = value;
                         displayFavoritePhotos();
                     } else if (selectId === 'view-select' || selectId === 'view-select-fav') {
+                        if (currentAppView === 'main' && currentAppSection === value) return;
                         navigateToUrl('main', value);
                         handleStateChange('main', value);
                     } else if (selectId === 'theme-select') {
@@ -1091,15 +1094,8 @@ export function initMainController() {
                     const photoId = photoCard.dataset.photoId;
                     incrementInteraction(galleryUuid);
                     
-                    const activeSection = document.querySelector('.general-content-scrolleable > div')?.dataset.section;
-                    let photoList;
-                    if (activeSection === 'favorites') photoList = currentFavoritesList;
-                    else if (activeSection === 'userSpecificFavorites') photoList = currentFavoritesList.filter(p => p.gallery_uuid === galleryUuid);
-                    else if (activeSection === 'trends') photoList = currentTrendingPhotosList;
-                    else photoList = currentGalleryPhotoList;
-
                     navigateToUrl('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
-                    displayPhoto(galleryUuid, photoId, photoList);
+                    handleStateChange('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
                     return;
                 }
             }
@@ -1156,19 +1152,14 @@ export function initMainController() {
         }
     }
 
-    async function handleStateChange(view, section, data) {
-        // 1. Mostrar el loader y limpiar el contenido anterior
-        const contentContainer = document.querySelector('.general-content-scrolleable');
-        if (contentContainer) {
-            contentContainer.innerHTML = loaderHTML;
-        }
-
-        // 2. Actualizar estado visual de los menús
+    function updateHeaderAndMenuStates(view, section) {
+        // Actualizar menú lateral principal
         document.querySelectorAll('[data-menu]').forEach(menu => {
             menu.classList.toggle('active', menu.dataset.menu === view);
             menu.classList.toggle('disabled', menu.dataset.menu !== view);
         });
-
+    
+        // Actualizar el link activo dentro del menú lateral
         document.querySelectorAll('[data-module="moduleSurface"] .menu-link').forEach(link => {
             const linkAction = link.dataset.action || '';
             let linkSection = '';
@@ -1179,6 +1170,47 @@ export function initMainController() {
             link.classList.toggle('active', linkSection === section);
         });
 
+        // Actualizar el select de vista (Home/Favoritos)
+        const viewSelects = ['view-select', 'view-select-fav'];
+        viewSelects.forEach(selectId => {
+            const selectContainer = document.getElementById(selectId);
+            if (selectContainer) {
+                const allLinks = selectContainer.querySelectorAll('.menu-link');
+                allLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Activar la opción correcta ('home' o 'favorites')
+                let activeValue = section === 'favorites' ? 'favorites' : 'home';
+                const activeLink = selectContainer.querySelector(`.menu-link[data-value="${activeValue}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    
+                    // Actualizar el texto del trigger
+                    const wrapper = selectContainer.closest('.select-wrapper');
+                    if(wrapper) {
+                        const triggerText = wrapper.querySelector('.select-trigger-text');
+                        const optionText = activeLink.querySelector('.menu-link-text span');
+                        if(triggerText && optionText) {
+                            triggerText.textContent = optionText.textContent;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function handleStateChange(view, section, data) {
+        // 1. Mostrar el loader y limpiar el contenido anterior
+        const contentContainer = document.querySelector('.general-content-scrolleable');
+        if (contentContainer) {
+            contentContainer.innerHTML = loaderHTML;
+        }
+
+        // 2. Actualizar estado visual de los menús
+        updateHeaderAndMenuStates(view, section);
+        currentAppView = view;
+        currentAppSection = section;
 
         // 3. Obtener y renderizar el nuevo contenido HTML
         try {
@@ -1194,6 +1226,7 @@ export function initMainController() {
                 const errorHtml = await fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=section&view=main&section=404`).then(res => res.text());
                 contentContainer.innerHTML = errorHtml;
             }
+            return; // Detener ejecución si la sección no se pudo cargar
         }
         
         // 4. Ejecutar la lógica específica de la sección DESPUÉS de que el DOM esté listo
@@ -1217,8 +1250,6 @@ export function initMainController() {
                 break;
             case 'galleryPhotos':
                 if (data && data.uuid) {
-                     // Si el nombre de la galería viene en los datos (desde el clic), lo usamos.
-                     // Si no, lo buscamos. Esto evita una llamada a la API innecesaria.
                     if (data.galleryName) {
                         fetchAndDisplayGalleryPhotos(data.uuid, data.galleryName);
                     } else {
@@ -1236,16 +1267,31 @@ export function initMainController() {
                 break;
             case 'photoView':
                 if (data && data.uuid && data.photoId) {
-                    let photoList = null;
-                    if (lastVisitedView === 'favorites' || lastVisitedView === 'userSpecificFavorites') {
-                        photoList = getFavorites();
-                        if (lastVisitedView === 'userSpecificFavorites' && lastVisitedData && lastVisitedData.uuid) {
-                            photoList = photoList.filter(p => p.gallery_uuid === lastVisitedData.uuid);
-                        }
+                    let photoList;
+
+                    // Determinar qué lista de fotos usar
+                    if (lastVisitedView === 'userSpecificFavorites' && lastVisitedData && lastVisitedData.uuid) {
+                        photoList = getFavorites().filter(p => p.gallery_uuid === lastVisitedData.uuid);
+                    } else if (lastVisitedView === 'favorites') {
+                         photoList = getFavorites();
                     } else if (lastVisitedView === 'trends') {
                         photoList = currentTrendingPhotosList;
+                    } else {
+                        photoList = currentGalleryPhotoList;
                     }
-                    displayPhoto(data.uuid, data.photoId, photoList);
+
+                    // Si la lista está vacía o no corresponde a la galería actual, la buscamos
+                    if (photoList.length === 0 || currentGalleryForPhotoView !== data.uuid) {
+                        fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=photos&uuid=${data.uuid}&limit=1000`)
+                            .then(res => res.json())
+                            .then(photos => {
+                                currentGalleryPhotoList = photos; // Actualizamos la lista principal
+                                renderPhotoView(data.uuid, data.photoId, photos);
+                            });
+                    } else {
+                        // Si ya tenemos la lista correcta, la usamos
+                        renderPhotoView(data.uuid, data.photoId, photoList);
+                    }
                 }
                 break;
             case 'userSpecificFavorites':
@@ -1289,6 +1335,8 @@ export function initMainController() {
 
         // 5. Configurar sombras y otros efectos dependientes del DOM
         setupScrollShadows();
+        // Se llama de nuevo para asegurar que los selectores que acabamos de cargar se actualicen
+        updateHeaderAndMenuStates(view, section);
     }
     
     // --- INICIALIZACIÓN ---
