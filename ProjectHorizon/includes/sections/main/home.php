@@ -12,34 +12,7 @@
                 </div>
             </div>
             <div class="content-header-right">
-                <div class="header-item">
-                    <div class="select-wrapper body-title">
-                        <div class="custom-select-trigger" data-action="toggle-select" data-target="view-select">
-                            <div class="select-trigger-icon">
-                                <span class="material-symbols-rounded">pageview</span>
-                            </div>
-                            <span class="select-trigger-text">Página principal</span>
-                            <div class="select-trigger-icon select-trigger-arrow">
-                                <span class="material-symbols-rounded">expand_more</span>
-                            </div>
-                        </div>
-                        <div class="module-content module-select disabled" id="view-select">
-                            <div class="menu-content">
-                                <div class="menu-list">
-                                    <div class="menu-link" data-value="home">
-                                        <div class="menu-link-icon"><span class="material-symbols-rounded">home</span></div>
-                                        <div class="menu-link-text"><span>Página principal</span></div>
-                                    </div>
-                                    <div class="menu-link" data-value="favorites">
-                                        <div class="menu-link-icon"><span class="material-symbols-rounded">favorite</span></div>
-                                        <div class="menu-link-text"><span>Mostrar favoritos</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="header-item" id="relevance-sorter">
+                <div class="header-item hide-on-mobile" id="relevance-sorter">
                     <div class="select-wrapper body-title">
                         <div class="custom-select-trigger" data-action="toggle-select" data-target="relevance-select">
                             <div class="select-trigger-icon">
@@ -83,13 +56,19 @@
                         <span class="material-symbols-rounded">view_list</span>
                     </div>
                 </div>
+                <div class="header-item show-on-mobile">
+                    <div class="header-button" data-action="toggle-select" data-target="relevance-select-mobile">
+                        <span class="material-symbols-rounded">filter_list</span>
+                    </div>
+                    <div class="module-content module-select disabled" id="relevance-select-mobile">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="section-content-block overflow-y">
         <div class="status-message-container disabled"></div>
         <div class="card-grid active" id="grid-view"></div>
-
         <div class="table-view-container body-title disabled" id="table-view">
             <table class="user-table">
                 <thead>
