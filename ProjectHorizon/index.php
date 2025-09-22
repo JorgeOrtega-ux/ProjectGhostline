@@ -1,4 +1,7 @@
-<?php require_once 'config/router.php'; ?>
+<?php 
+require_once 'config/session.php';
+require_once 'config/router.php'; 
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -27,7 +30,8 @@
             </div>
         </div>
     </div>
-
+    
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script type="module" src="<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>/assets/js/app-init.js"></script>
 </body>
 

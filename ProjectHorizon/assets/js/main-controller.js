@@ -3,6 +3,7 @@
 import { navigateToUrl, setupPopStateHandler, setInitialHistoryState } from './url-manager.js';
 import { setTheme, updateThemeSelectorUI } from './theme-manager.js';
 import { setLanguage, updateLanguageSelectorUI } from './language-manager.js';
+import { initTooltips } from './tooltip-manager.js';
 
 function getFavorites() {
     const favorites = localStorage.getItem('favoritePhotos');
@@ -74,16 +75,24 @@ export function initMainController() {
     let currentAppView = null;
     let currentAppSection = null;
 
-    let currentView = 'grid';
     let currentSortBy = 'relevant';
     let searchDebounceTimer;
     let currentGalleryForPhotoView = null;
     let currentGalleryNameForPhotoView = null;
     let currentGalleryPhotoList = [];
     let currentTrendingPhotosList = [];
+    let currentHistoryPhotosList = [];
     let currentPhotoData = null;
     let lastVisitedView = null;
     let lastVisitedData = null;
+    let adCountdownInterval = null;
+    let photoAfterAd = null;
+    let galleryAfterAd = null;
+    let unlockCountdownInterval = null;
+    
+    // *** VARIABLE CORREGIDA ***
+    // Almacenará la lista de fotos actual para el visor
+    let currentPhotoViewList = [];
 
     let galleriesCurrentPage = 1;
     let photosCurrentPage = 1;
@@ -394,6 +403,40 @@ export function initMainController() {
             }
         }
     }
+    
+    function updateCardPrivacyStatus(uuid, unlockedTimestamp) {
+        const card = document.querySelector(`.card[data-uuid="${uuid}"]`);
+        if (!card) return;
+
+        const badge = card.querySelector('.privacy-badge');
+        if (!badge) return;
+
+        const now = new Date().getTime();
+        const sixtyMinutes = 60 * 60 * 1000;
+        const remainingTime = unlockedTimestamp + sixtyMinutes - now;
+
+        if (remainingTime > 0) {
+            const minutes = Math.floor(remainingTime / 60000);
+            const seconds = Math.floor((remainingTime % 60000) / 1000);
+            badge.innerHTML = `<span class="material-symbols-rounded">lock_open</span> Desbloqueado (${minutes}:${seconds.toString().padStart(2, '0')})`;
+            badge.className = 'privacy-badge';
+        } else {
+            badge.innerHTML = `<span class="material-symbols-rounded">lock</span> Privado`;
+            badge.className = 'privacy-badge';
+        }
+    }
+    
+    function startUnlockCountdownTimer() {
+        if (unlockCountdownInterval) {
+            clearInterval(unlockCountdownInterval);
+        }
+        unlockCountdownInterval = setInterval(() => {
+            const unlockedGalleries = JSON.parse(localStorage.getItem('unlockedGalleries') || '{}');
+            for (const uuid in unlockedGalleries) {
+                updateCardPrivacyStatus(uuid, unlockedGalleries[uuid]);
+            }
+        }, 1000);
+    }
 
     function displayGalleriesAsGrid(galleries, container, sortBy, append = false) {
         if (!append) {
@@ -412,6 +455,16 @@ export function initMainController() {
                 background.style.backgroundImage = `url('${gallery.background_photo_url}')`;
                 card.appendChild(background);
             }
+
+            const badge = document.createElement('div');
+            badge.className = 'privacy-badge';
+
+            if (gallery.privacy === 1) {
+                badge.innerHTML = `<span class="material-symbols-rounded">lock</span> Privado`;
+            } else {
+                badge.innerHTML = `<span class="material-symbols-rounded">public</span> Público`;
+            }
+            card.appendChild(badge);
 
             const overlay = document.createElement('div');
             overlay.className = 'card-content-overlay';
@@ -441,50 +494,33 @@ export function initMainController() {
             overlay.appendChild(textContainer);
             card.appendChild(overlay);
             container.appendChild(card);
+            
+            if (gallery.privacy === 1) {
+                const unlockedGalleries = JSON.parse(localStorage.getItem('unlockedGalleries') || '{}');
+                if (unlockedGalleries[gallery.uuid]) {
+                    updateCardPrivacyStatus(gallery.uuid, unlockedGalleries[gallery.uuid]);
+                }
+            }
         });
     }
-
-    function displayGalleriesAsTable(galleries, container, append = false) {
-        const tbody = container.querySelector('tbody');
-        if (!append) {
-            tbody.innerHTML = '';
-        }
-        galleries.forEach(gallery => {
-            const row = document.createElement('tr');
-            row.dataset.uuid = gallery.uuid;
-            row.dataset.name = gallery.name;
-            row.dataset.privacy = gallery.privacy;
-
-            const nameCell = document.createElement('td');
-            nameCell.innerHTML = `<div class="user-info"><div class="user-avatar" style="background-image: url('${gallery.profile_picture_url || ''}')"></div><span>${gallery.name}</span></div>`;
-            const privacyCell = document.createElement('td');
-            privacyCell.textContent = gallery.privacy == 1 ? 'Privado' : 'Público';
-            const typeCell = document.createElement('td');
-            typeCell.textContent = 'Galería';
-            const editedCell = document.createElement('td');
-            editedCell.textContent = new Date(gallery.last_edited).toLocaleDateString();
-
-            row.appendChild(nameCell);
-            row.appendChild(privacyCell);
-            row.appendChild(typeCell);
-            row.appendChild(editedCell);
-            tbody.appendChild(row);
-        });
-    }
-
-    async function promptForAccessCode(uuid, name) {
-        navigateToUrl('main', 'accessCodePrompt', { uuid: uuid });
-        await handleStateChange('main', 'accessCodePrompt', { uuid: uuid });
+    
+    async function promptToWatchAd(uuid, name) {
+        galleryAfterAd = { view: 'main', section: 'galleryPhotos', data: { uuid, galleryName: name } };
+        navigateToUrl('main', 'accessCodePrompt', { uuid });
+        await handleStateChange('main', 'accessCodePrompt', { uuid });
 
         const title = document.getElementById('access-code-title');
-        const promptContainer = document.querySelector('[data-section="accessCodePrompt"]');
-        const input = document.getElementById('access-code-input');
-        const error = document.getElementById('access-code-error');
-
         if (title) title.textContent = `Galería de ${name}`;
-        if (promptContainer) promptContainer.dataset.galleryUuid = uuid;
-        if (input) input.value = '';
-        if (error) error.textContent = '';
+    }
+
+    function isPrivateGalleryUnlocked(uuid) {
+        const unlockedGalleries = JSON.parse(localStorage.getItem('unlockedGalleries') || '{}');
+        if (!unlockedGalleries[uuid]) {
+            return false;
+        }
+        const now = new Date().getTime();
+        const sixtyMinutes = 60 * 60 * 1000;
+        return (now - unlockedGalleries[uuid]) < sixtyMinutes;
     }
 
     function fetchAndDisplayGalleries(sortBy = 'relevant', searchTerm = '', append = false) {
@@ -502,15 +538,12 @@ export function initMainController() {
         }
 
         const gridContainer = section.querySelector('#grid-view');
-        const tableContainer = section.querySelector('#table-view');
         const statusContainer = section.querySelector('.status-message-container');
 
         if (!append) {
             galleriesCurrentPage = 1;
             if (gridContainer) gridContainer.innerHTML = '';
-            if (tableContainer) tableContainer.querySelector('tbody').innerHTML = '';
             if (gridContainer) gridContainer.classList.add('disabled');
-            if (tableContainer) tableContainer.classList.add('disabled');
             if (statusContainer) {
                 statusContainer.classList.remove('disabled');
                 statusContainer.innerHTML = loaderHTML;
@@ -528,20 +561,14 @@ export function initMainController() {
                     statusContainer.innerHTML = '';
                 }
 
-                if (currentView === 'grid') {
-                    if (gridContainer) gridContainer.classList.remove('disabled');
-                } else {
-                    if (tableContainer) tableContainer.classList.remove('disabled');
-                }
-
+                if (gridContainer) gridContainer.classList.remove('disabled');
+                
                 if (data.length > 0) {
                     displayGalleriesAsGrid(data, gridContainer, sortBy, append);
-                    displayGalleriesAsTable(data, tableContainer, append);
                 } else if (!append) {
                     if (statusContainer) statusContainer.classList.remove('disabled');
                     if (statusContainer) statusContainer.innerHTML = '<div><h2>No se encontraron resultados</h2><p>Prueba con una búsqueda diferente para encontrar lo que buscas.</p></div>';
                     if (gridContainer) gridContainer.classList.add('disabled');
-                    if (tableContainer) tableContainer.classList.add('disabled');
                 }
 
                 const loadMoreContainer = document.getElementById('users-load-more-container');
@@ -900,36 +927,6 @@ export function initMainController() {
         }
     }
 
-
-    function applyViewPreference() {
-        const savedView = localStorage.getItem('galleryView') || 'grid';
-        currentView = savedView;
-
-        const section = document.querySelector('.general-content-scrolleable > div');
-        if (!section) return;
-
-        const gridView = section.querySelector('#grid-view');
-        const tableView = section.querySelector('#table-view');
-        const toggleViewBtn = document.querySelector('[data-action="toggle-view"]');
-        const icon = toggleViewBtn ? toggleViewBtn.querySelector('.material-symbols-rounded') : null;
-
-        if (gridView && tableView && icon) {
-            if (savedView === 'table') {
-                gridView.classList.remove('active');
-                gridView.classList.add('disabled');
-                tableView.classList.remove('disabled');
-                tableView.classList.add('active');
-                icon.textContent = 'grid_view';
-            } else {
-                tableView.classList.remove('active');
-                tableView.classList.add('disabled');
-                gridView.classList.remove('disabled');
-                gridView.classList.add('active');
-                icon.textContent = 'view_list';
-            }
-        }
-    }
-
     async function downloadPhoto(url) {
         try {
             const response = await fetch(url);
@@ -1011,6 +1008,14 @@ export function initMainController() {
             if (actionTarget) {
                 const action = actionTarget.dataset.action;
 
+                // En móviles, al hacer clic en un enlace del menú principal, se oculta el menú.
+                if (window.matchMedia('(max-width: 468px)').matches && actionTarget.closest('[data-module="moduleSurface"] .menu-link')) {
+                    const moduleSurface = document.querySelector('[data-module="moduleSurface"]');
+                    if (moduleSurface) {
+                        moduleSurface.classList.add('disabled');
+                    }
+                }
+
                 if (action !== 'download-photo' && !actionTarget.closest('a[target="_blank"]')) {
                     const link = actionTarget.closest('.menu-link');
                     if (link && link.tagName.toLowerCase() === 'a' && !link.getAttribute('href').startsWith('#')) {
@@ -1042,6 +1047,8 @@ export function initMainController() {
                     case 'toggleSectionHome':
                     case 'toggleSectionTrends':
                     case 'toggleSectionFavorites':
+                    case 'toggleSectionLogin':
+                    case 'toggleSectionRegister':
                     case 'toggleSectionAccessibility':
                     case 'toggleSectionHistoryPrivacy':
                     case 'toggleSectionHistory':
@@ -1052,15 +1059,10 @@ export function initMainController() {
                         const sectionName = action.substring("toggleSection".length);
                         const targetSection = sectionName.charAt(0).toLowerCase() + sectionName.slice(1);
                         const parentMenu = actionTarget.closest('[data-menu]');
-                        const targetView = parentMenu ? parentMenu.dataset.menu : currentAppView;
+                        const targetView = parentMenu ? parentMenu.dataset.menu : 'main';
                         if (currentAppView === targetView && currentAppSection === targetSection) return;
                         navigateToUrl(targetView, targetSection);
                         handleStateChange(targetView, targetSection);
-                        break;
-                    case 'toggle-view':
-                        currentView = (currentView === 'grid') ? 'table' : 'grid';
-                        localStorage.setItem('galleryView', currentView);
-                        applyViewPreference();
                         break;
                     case 'load-more-users':
                         const homeSearch = document.querySelector('.search-input-text input');
@@ -1072,7 +1074,10 @@ export function initMainController() {
                         }
                         break;
                     case 'returnToUserPhotos':
-                        if (lastVisitedView === 'favorites') {
+                        if (lastVisitedView === 'history') {
+                            navigateToUrl('settings', 'history');
+                            handleStateChange('settings', 'history');
+                        } else if (lastVisitedView === 'favorites') {
                             navigateToUrl('main', 'favorites');
                             handleStateChange('main', 'favorites');
                         } else if (lastVisitedView === 'userSpecificFavorites' && lastVisitedData && lastVisitedData.uuid) {
@@ -1099,7 +1104,7 @@ export function initMainController() {
                         break;
                     case 'toggle-favorite-card':
                         const photoIdFav = actionTarget.dataset.photoId;
-                        const allPhotos = [...getFavorites(), ...currentGalleryPhotoList, ...currentTrendingPhotosList];
+                        const allPhotos = [...getFavorites(), ...currentGalleryPhotoList, ...currentTrendingPhotosList, ...currentHistoryPhotosList];
                         const photoDataFav = allPhotos.find(p => p.id == photoIdFav);
 
                         if (photoDataFav) {
@@ -1120,32 +1125,35 @@ export function initMainController() {
                             }
                         }
                         break;
+                    
+                    // *** CASO CORREGIDO ***
                     case 'previous-photo':
                     case 'next-photo':
                         if (!actionTarget.classList.contains('disabled-nav')) {
-                            let listToUse = [];
-                            if (lastVisitedView === 'favorites' || lastVisitedView === 'userSpecificFavorites') {
-                                listToUse = currentFavoritesList;
-                            } else if (lastVisitedView === 'trends') {
-                                listToUse = currentTrendingPhotosList;
-                            } else {
-                                listToUse = currentGalleryPhotoList;
-                            }
-
+                            const listToUse = currentPhotoViewList; // Usar siempre la lista del visor
+                            
                             const currentId = currentPhotoData ? currentPhotoData.id : null;
                             if (!currentId || listToUse.length === 0) return;
-
+                    
                             const currentIndex = listToUse.findIndex(p => p.id == currentId);
                             if (currentIndex !== -1) {
                                 let nextIndex = (action === 'next-photo') ? currentIndex + 1 : currentIndex - 1;
                                 if (nextIndex >= 0 && nextIndex < listToUse.length) {
                                     const nextPhoto = listToUse[nextIndex];
                                     navigateToUrl('main', 'photoView', { uuid: nextPhoto.gallery_uuid, photoId: nextPhoto.id });
-                                    handleStateChange('main', 'photoView', { uuid: nextPhoto.gallery_uuid, photoId: nextPhoto.id });
+                                    // NO llamamos a handleStateChange aquí, ya que popstate lo hará.
+                                    // Pero sí renderizamos la nueva foto inmediatamente para una mejor UX.
+                                    if (Math.random() < 0.25) {
+                                        photoAfterAd = { view: 'main', section: 'photoView', data: { uuid: nextPhoto.gallery_uuid, photoId: nextPhoto.id } };
+                                        handleStateChange('main', 'adView');
+                                    } else {
+                                        renderPhotoView(nextPhoto.gallery_uuid, nextPhoto.id, listToUse);
+                                    }
                                 }
                             }
                         }
                         break;
+                    
                     case 'toggle-photo-menu':
                         const currentContainer = actionTarget.closest('.card-actions-container');
                         const currentMenu = currentContainer.querySelector('.photo-context-menu');
@@ -1177,37 +1185,18 @@ export function initMainController() {
                             downloadPhoto(cardForDownload.dataset.photoUrl);
                         }
                         break;
-                    case 'access-code-submit':
-                        const promptContainer = document.querySelector('[data-section="accessCodePrompt"]');
-                        const uuid = promptContainer.dataset.galleryUuid;
-                        const codeInput = document.getElementById('access-code-input');
-                        const error = document.getElementById('access-code-error');
-                        const code = codeInput.value;
-
-                        if (!uuid || !code) {
-                            error.textContent = 'Por favor, introduce un código.';
-                            return;
+                    case 'watch-ad-to-unlock':
+                        handleStateChange('main', 'adView');
+                        break;
+                    case 'toggle-password-visibility':
+                        const passwordInput = actionTarget.previousElementSibling.previousElementSibling;
+                        if (passwordInput.type === 'password') {
+                            passwordInput.type = 'text';
+                            actionTarget.textContent = 'visibility_off';
+                        } else {
+                            passwordInput.type = 'password';
+                            actionTarget.textContent = 'visibility';
                         }
-
-                        const formData = new FormData();
-                        formData.append('action_type', 'verify_code');
-                        formData.append('uuid', uuid);
-                        formData.append('code', code);
-
-                        fetch(`${window.BASE_PATH}/api/main_handler.php`, {
-                            method: 'POST',
-                            body: formData
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    const galleryTitle = document.getElementById('access-code-title').textContent.replace('Galería de ', '');
-                                    navigateToUrl('main', 'galleryPhotos', { uuid: uuid });
-                                    handleStateChange('main', 'galleryPhotos', { uuid: uuid, galleryName: galleryTitle });
-                                } else {
-                                    error.textContent = data.message || 'Error al verificar el código.';
-                                }
-                            });
                         break;
 
                 }
@@ -1287,7 +1276,7 @@ export function initMainController() {
                     return;
                 }
 
-                const galleryElement = event.target.closest('.card:not(.photo-card):not(.user-card), tr[data-uuid]');
+                const galleryElement = event.target.closest('.card:not(.photo-card):not(.user-card)');
                 if (galleryElement && galleryElement.dataset.uuid) {
                     const uuid = galleryElement.dataset.uuid;
                     const name = galleryElement.dataset.name;
@@ -1295,8 +1284,8 @@ export function initMainController() {
 
                     incrementInteraction(uuid);
 
-                    if (isPrivate) {
-                        promptForAccessCode(uuid, name);
+                    if (isPrivate && !isPrivateGalleryUnlocked(uuid)) {
+                        promptToWatchAd(uuid, name);
                     } else {
                         navigateToUrl('main', 'galleryPhotos', { uuid: uuid, galleryName: name });
                         handleStateChange('main', 'galleryPhotos', { uuid: uuid, galleryName: name });
@@ -1309,9 +1298,14 @@ export function initMainController() {
                     const galleryUuid = photoCard.dataset.galleryUuid || currentGalleryForPhotoView;
                     const photoId = photoCard.dataset.photoId;
                     incrementInteraction(galleryUuid);
-
-                    navigateToUrl('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
-                    handleStateChange('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
+    
+                    if (Math.random() < 0.25) { // 25% de probabilidad
+                        photoAfterAd = { view: 'main', section: 'photoView', data: { uuid: galleryUuid, photoId: photoId } };
+                        handleStateChange('main', 'adView');
+                    } else {
+                        navigateToUrl('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
+                        handleStateChange('main', 'photoView', { uuid: galleryUuid, photoId: photoId });
+                    }
                     return;
                 }
             }
@@ -1406,7 +1400,6 @@ export function initMainController() {
         }
     }
 
-    // *** FUNCIÓN displayHistory FINAL Y CORREGIDA ***
     function displayHistory() {
         const history = getHistory();
         const mainContainer = document.querySelector('[data-section="history"]');
@@ -1424,7 +1417,6 @@ export function initMainController() {
         const isViewHistoryPaused = localStorage.getItem('enable-view-history') === 'false';
         const isSearchHistoryPaused = localStorage.getItem('enable-search-history') === 'false';
 
-        // Resetear estado visual
         historyContainer.style.display = 'none';
         statusContainer.classList.add('disabled');
         pausedAlert.classList.add('disabled');
@@ -1498,7 +1490,7 @@ export function initMainController() {
                         photosGrid.appendChild(card);
                     });
                 }
-            } else { // No hay contenido
+            } else {
                 if (isViewHistoryPaused) {
                     statusContainer.innerHTML = '<div><h2>El historial de perfiles y fotos está pausado</h2><p>Tu actividad de visualización no se guardará mientras esta opción esté desactivada.</p></div>';
                     statusContainer.classList.remove('disabled');
@@ -1526,7 +1518,7 @@ export function initMainController() {
                     `;
                     searchesList.appendChild(item);
                 });
-            } else { // No hay contenido
+            } else {
                 if (isSearchHistoryPaused) {
                     statusContainer.innerHTML = '<div><h2>El historial de búsqueda está pausado</h2><p>Tus búsquedas no se guardarán mientras esta opción esté desactivada.</p></div>';
                     statusContainer.classList.remove('disabled');
@@ -1572,7 +1564,6 @@ export function initMainController() {
 
         switch (section) {
             case 'home':
-                applyViewPreference();
                 setupMoreOptionsMenu();
                 updateSelectActiveState('relevance-select', currentSortBy);
                 fetchAndDisplayGalleries(currentSortBy);
@@ -1584,6 +1575,13 @@ export function initMainController() {
                 break;
             case 'trends':
                 fetchAndDisplayTrends();
+                break;
+            case 'login':
+                // Logic for login section can be added here if needed in the future
+                setupAuthForms();
+                break;
+            case 'register':
+                setupAuthForms();
                 break;
             case 'accessibility':
                 updateThemeSelectorUI(localStorage.getItem('theme') || 'system');
@@ -1620,41 +1618,48 @@ export function initMainController() {
                     }
                 }
                 break;
+            
+            // *** CASO CORREGIDO ***
             case 'photoView':
                 if (data && data.uuid && data.photoId) {
-                    let photoList;
+                    let photoListPromise;
 
+                    // Determinar qué lista usar basado en la última vista visitada
                     if (lastVisitedView === 'userSpecificFavorites' && lastVisitedData && lastVisitedData.uuid) {
-                        photoList = getFavorites().filter(p => p.gallery_uuid === data.uuid);
-                        renderPhotoView(data.uuid, data.photoId, photoList);
+                        photoListPromise = Promise.resolve(getFavorites().filter(p => p.gallery_uuid === data.uuid));
                     } else if (lastVisitedView === 'favorites') {
-                        photoList = currentFavoritesList;
-                        renderPhotoView(data.uuid, data.photoId, photoList);
+                        photoListPromise = Promise.resolve(currentFavoritesList);
                     } else if (lastVisitedView === 'trends') {
-                        photoList = currentTrendingPhotosList;
-                        renderPhotoView(data.uuid, data.photoId, photoList);
+                        photoListPromise = Promise.resolve(currentTrendingPhotosList);
+                    } else if (lastVisitedView === 'history') {
+                        currentHistoryPhotosList = getHistory().photos;
+                        photoListPromise = Promise.resolve(currentHistoryPhotosList);
                     } else {
+                        // Si la lista de la galería actual ya está cargada y coincide, úsala.
                         if (currentGalleryForPhotoView === data.uuid && currentGalleryPhotoList.length > 0) {
-                            renderPhotoView(data.uuid, data.photoId, currentGalleryPhotoList);
+                            photoListPromise = Promise.resolve(currentGalleryPhotoList);
                         } else {
-                            fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=photos&uuid=${data.uuid}&limit=1000`)
+                            // Si no, obtén la lista completa de fotos de la galería.
+                            photoListPromise = fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=photos&uuid=${data.uuid}&limit=1000`)
                                 .then(res => res.json())
                                 .then(photos => {
                                     currentGalleryPhotoList = photos;
                                     currentGalleryForPhotoView = data.uuid;
-                                    renderPhotoView(data.uuid, data.photoId, photos);
+                                    return photos;
                                 });
                         }
                     }
+                    
+                    // Una vez que la promesa se resuelve, actualiza la lista del visor y renderiza la foto.
+                    photoListPromise.then(photoList => {
+                        currentPhotoViewList = photoList; // Actualiza la lista del contexto del visor
+                        renderPhotoView(data.uuid, data.photoId, currentPhotoViewList);
+                    });
                 }
                 break;
+            
             case 'accessCodePrompt':
                 if (data && data.uuid) {
-                    const promptContainer = document.querySelector('[data-section="accessCodePrompt"]');
-                    if (promptContainer) {
-                        promptContainer.dataset.galleryUuid = data.uuid;
-                    }
-
                     const titleElement = document.getElementById('access-code-title');
                     fetch(`${window.BASE_PATH}/api/main_handler.php?request_type=galleries&uuid=${data.uuid}`)
                         .then(res => res.json())
@@ -1663,19 +1668,54 @@ export function initMainController() {
                                 titleElement.textContent = `Galería de ${gallery.name}`;
                             }
                         });
+                }
+                break;
+            case 'adView':
+                let countdown = 5;
+                const timerElement = document.getElementById('ad-timer');
+                const skipButton = document.getElementById('skip-ad-button');
 
-                    const codeInput = document.getElementById('access-code-input');
-                    if (codeInput) {
-                        codeInput.addEventListener('input', (e) => {
-                            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (adCountdownInterval) {
+                    clearInterval(adCountdownInterval);
+                }
 
-                            if (value.length > 4) {
-                                value = value.slice(0, 4) + '-' + value.slice(4);
-                            }
-
-                            e.target.value = value;
-                        });
+                adCountdownInterval = setInterval(() => {
+                    countdown--;
+                    if (timerElement) {
+                        timerElement.textContent = countdown;
                     }
+                    if (countdown <= 0) {
+                        clearInterval(adCountdownInterval);
+                        if (timerElement) {
+                            timerElement.textContent = '0';
+                        }
+                        if (skipButton) {
+                            skipButton.disabled = false;
+                        }
+                    }
+                }, 1000);
+
+                if (skipButton) {
+                    skipButton.onclick = () => {
+                        const destination = galleryAfterAd || photoAfterAd;
+                        if (galleryAfterAd) {
+                            const unlockedGalleries = JSON.parse(localStorage.getItem('unlockedGalleries') || '{}');
+                            const galleryUuidToUnlock = galleryAfterAd.data.uuid;
+                            unlockedGalleries[galleryUuidToUnlock] = new Date().getTime();
+                            localStorage.setItem('unlockedGalleries', JSON.stringify(unlockedGalleries));
+                        }
+
+                        if (destination) {
+                            navigateToUrl(destination.view, destination.section, destination.data);
+                            handleStateChange(destination.view, destination.section, destination.data);
+                            photoAfterAd = null;
+                            galleryAfterAd = null;
+                        } else {
+                            // Si no hay un destino específico, vuelve a la página de inicio
+                            navigateToUrl('main', 'home');
+                            handleStateChange('main', 'home');
+                        }
+                    };
                 }
                 break;
             case 'userSpecificFavorites':
@@ -1719,10 +1759,12 @@ export function initMainController() {
 
         setupScrollShadows();
         updateHeaderAndMenuStates(view, section);
+        initTooltips();
     }
 
     // --- INICIALIZACIÓN ---
     setupEventListeners();
+    startUnlockCountdownTimer();
 
     setupPopStateHandler((view, section, pushState, data) => {
         handleStateChange(view, section, data);
@@ -1734,6 +1776,8 @@ export function initMainController() {
         '': { view: 'main', section: 'home' },
         'trends': { view: 'main', section: 'trends' },
         'favorites': { view: 'main', section: 'favorites' },
+        'login': { view: 'main', section: 'login' },
+        'register': { view: 'main', section: 'register' },
         'settings/accessibility': { view: 'settings', section: 'accessibility' },
         'settings/history-privacy': { view: 'settings', section: 'historyPrivacy' },
         'settings/history': { view: 'settings', section: 'history' },
@@ -1776,4 +1820,80 @@ export function initMainController() {
         lastVisitedView = initialRoute.section;
         lastVisitedData = initialStateData;
     }
+
+    function setupAuthForms() {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            formData.append('action', 'login');
+            
+            fetch(`${window.BASE_PATH}/api/auth_handler.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = `${window.BASE_PATH}/`;
+                } else {
+                    alert(data.message);
+                }
+            });
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+            formData.append('action', 'register');
+            
+            fetch(`${window.BASE_PATH}/api/auth_handler.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = `${window.BASE_PATH}/`;
+                } else {
+                    alert(data.message);
+                }
+            });
+        });
+    }
+}
+
+document.addEventListener('click', function(event) {
+    const actionTarget = event.target.closest('[data-action="logout"]');
+    if (actionTarget) {
+        fetch(`${window.BASE_PATH}/api/auth_handler.php`, {
+            method: 'POST',
+            body: new URLSearchParams({ 'action': 'logout' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            }
+        });
+    }
+    
+    const userMenuTrigger = event.target.closest('[data-action="toggle-user-menu"]');
+    if (userMenuTrigger) {
+        const userMenu = document.getElementById('user-menu-select');
+        if (userMenu) {
+            userMenu.classList.toggle('disabled');
+        }
+    } else if (!event.target.closest('.user-avatar-container')) {
+        const userMenu = document.getElementById('user-menu-select');
+        if (userMenu) {
+            userMenu.classList.add('disabled');
+        }
+    }
+});
 }
