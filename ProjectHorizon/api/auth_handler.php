@@ -77,6 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => true]);
 
     } elseif ($action === 'check_session') {
+        // LÓGICA SIMPLIFICADA: Solo lee la sesión, que ya fue actualizada por index.php
         if (isset($_SESSION['user_id'])) {
             echo json_encode(['loggedIn' => true, 'userName' => $_SESSION['user_name'], 'userRole' => $_SESSION['user_role']]);
         } else {

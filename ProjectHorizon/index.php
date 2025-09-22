@@ -1,6 +1,26 @@
 <?php 
 require_once 'config/session.php';
+require_once 'config/db.php'; // 1. INCLUIR LA CONEXIÓN A LA BD
 require_once 'config/router.php'; 
+
+// 2. LÓGICA DE VERIFICACIÓN DE SESIÓN MOVIDA AQUÍ
+// Siempre verificar el rol más reciente desde la BD si el usuario está logueado
+if (isset($_SESSION['user_id'])) {
+    $sql = "SELECT role FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    // Verificar si la preparación de la consulta fue exitosa
+    if ($stmt) {
+        $stmt->bind_param("i", $_SESSION['user_id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($user = $result->fetch_assoc()) {
+            // Actualizar la sesión con el rol fresco de la BD
+            $_SESSION['user_role'] = $user['role'];
+        }
+        $stmt->close();
+    }
+}
+// La conexión $conn se cerrará automáticamente al final del script
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -10,6 +30,7 @@ require_once 'config/router.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Horizon</title>
     <script>
+        // 3. La variable de JS ahora siempre tendrá el rol actualizado
         window.BASE_PATH = "<?php echo rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'); ?>";
         window.USER_ROLE = "<?php echo isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'guest'; ?>";
     </script>
