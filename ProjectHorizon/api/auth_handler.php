@@ -32,9 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = $stmt->insert_id;
             $_SESSION['user_id'] = $user_id;
             $_SESSION['user_name'] = $name;
+            $_SESSION['user_role'] = 'user'; // Asignar rol por defecto
             echo json_encode(['success' => true, 'message' => 'Registro exitoso.']);
         } else {
-            if ($conn->errno === 1062) { // Error de entrada duplicada
+            if ($conn->errno === 1062) {
                 echo json_encode(['success' => false, 'message' => 'El correo electrónico ya está registrado.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Error en el registro.']);
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $sql = "SELECT id, name, password FROM users WHERE email = ?";
+        $sql = "SELECT id, name, password, role FROM users WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -61,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
+                $_SESSION['user_role'] = $user['role']; // Guardar rol en la sesión
                 echo json_encode(['success' => true, 'message' => 'Inicio de sesión exitoso.']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Contraseña incorrecta.']);
@@ -76,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } elseif ($action === 'check_session') {
         if (isset($_SESSION['user_id'])) {
-            echo json_encode(['loggedIn' => true, 'userName' => $_SESSION['user_name']]);
+            echo json_encode(['loggedIn' => true, 'userName' => $_SESSION['user_name'], 'userRole' => $_SESSION['user_role']]);
         } else {
             echo json_encode(['loggedIn' => false]);
         }

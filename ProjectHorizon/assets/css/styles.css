@@ -1461,11 +1461,16 @@ body {
     font-weight: 500;
     cursor: pointer;
     user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+.user-avatar:hover {
+    background-color: #d1d1d1;
 }
 
 #user-menu-select {
     position: absolute;
     top: calc(100% + 5px);
     right: 0;
-    width: 220px;
+    width: 240px; /* Ancho ajustado para el nuevo texto */
 }

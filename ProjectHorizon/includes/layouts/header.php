@@ -10,7 +10,7 @@
         <div class="header-item" id="user-actions">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="user-avatar-container">
-                    <div class="user-avatar" data-action="toggle-user-menu">
+                    <div class="user-avatar" data-action="toggle-user-menu" data-tooltip="Cuenta de <?php echo htmlspecialchars($_SESSION['user_name']); ?>">
                         <?php
                         $name_parts = explode(' ', trim($_SESSION['user_name']));
                         $initials = '';
@@ -20,12 +20,20 @@
                         if (count($name_parts) > 1) {
                             $initials .= strtoupper(substr($name_parts[count($name_parts) - 1], 0, 1));
                         }
-                        echo $initials;
+                        echo htmlspecialchars($initials);
                         ?>
                     </div>
                     <div class="module-content module-select disabled" id="user-menu-select">
                         <div class="menu-content">
                             <div class="menu-list">
+                                <div class="menu-link" data-action="toggleSettings">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">settings</span></div>
+                                    <div class="menu-link-text"><span>Configuración</span></div>
+                                </div>
+                                <div class="menu-link" data-action="toggleHelp">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">help</span></div>
+                                    <div class="menu-link-text"><span>Ayuda y comentarios</span></div>
+                                </div>
                                 <div class="menu-link" data-action="logout">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">logout</span></div>
                                     <div class="menu-link-text"><span>Cerrar sesión</span></div>
