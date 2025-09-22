@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'help-privacyPolicy' => '../includes/sections/help/privacy-policy.php',
             'help-termsConditions' => '../includes/sections/help/terms-conditions.php',
             'help-cookiePolicy' => '../includes/sections/help/cookie-policy.php',
-            'help-sendFeedback' => '../includes/sections/help/send-feedback.php'
+            'help-sendFeedback' => '../includes/sections/help/send-feedback.php',
+            'admin-manageUsers' => '../includes/sections/admin/manage-users.php',
+            'admin-manageGalleries' => '../includes/sections/admin/manage-galleries.php'
         ];
 
         $section_key = $view . '-' . $section;

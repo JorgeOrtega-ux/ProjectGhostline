@@ -26,6 +26,12 @@
                     <div class="module-content module-select disabled" id="user-menu-select">
                         <div class="menu-content">
                             <div class="menu-list">
+                                <?php if ($_SESSION['user_role'] === 'administrator'): ?>
+                                <div class="menu-link" data-action="toggleAdminPanel">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">admin_panel_settings</span></div>
+                                    <div class="menu-link-text"><span>Panel de Administrador</span></div>
+                                </div>
+                                <?php endif; ?>
                                 <div class="menu-link" data-action="toggleSettings">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">settings</span></div>
                                     <div class="menu-link-text"><span>Configuración</span></div>

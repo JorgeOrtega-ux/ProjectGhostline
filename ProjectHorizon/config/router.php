@@ -12,12 +12,20 @@ class Router {
         'help/privacy-policy' => ['view' => 'help', 'section' => 'privacyPolicy'],
         'help/terms-conditions' => ['view' => 'help', 'section' => 'termsConditions'],
         'help/cookie-policy' => ['view' => 'help', 'section' => 'cookiePolicy'],
-        'help/send-feedback' => ['view' => 'help', 'section' => 'sendFeedback']
+        'help/send-feedback' => ['view' => 'help', 'section' => 'sendFeedback'],
+        'admin/users' => ['view' => 'admin', 'section' => 'manageUsers', 'requires_auth' => 'administrator'],
+        'admin/galleries' => ['view' => 'admin', 'section' => 'manageGalleries', 'requires_auth' => 'administrator']
     ];
 
     public static function getRouteConfig($path) {
         if (array_key_exists($path, self::$routes)) {
-            return self::$routes[$path];
+            $route = self::$routes[$path];
+            if (isset($route['requires_auth'])) {
+                if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== $route['requires_auth']) {
+                    return null; // No autorizado
+                }
+            }
+            return $route;
         }
 
         if (preg_match('/^gallery\/[a-f0-9-]{36}\/photo\/\d+$/', $path)) {

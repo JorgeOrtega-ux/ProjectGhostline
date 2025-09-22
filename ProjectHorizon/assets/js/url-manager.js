@@ -15,6 +15,8 @@ const urlMap = {
     'main-photoView': 'gallery/{uuid}/photo/{photoId}',
     'main-accessCodePrompt': 'gallery/{uuid}/access-code',
     'main-userSpecificFavorites': 'favorites/{uuid}',
+    'admin-manageUsers': 'admin/users',
+    'admin-manageGalleries': 'admin/galleries',
     'main-404': '404'
 };
 

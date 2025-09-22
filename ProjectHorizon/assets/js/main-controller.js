@@ -1044,6 +1044,13 @@ export function initMainController() {
                         navigateToUrl('main', 'home');
                         handleStateChange('main', 'home');
                         break;
+                    case 'toggleAdminPanel':
+                        if (window.USER_ROLE === 'administrator') {
+                            if (currentAppView === 'admin' && currentAppSection === 'manageUsers') return;
+                            navigateToUrl('admin', 'manageUsers');
+                            handleStateChange('admin', 'manageUsers');
+                        }
+                        break;
                     case 'toggleSectionHome':
                     case 'toggleSectionTrends':
                     case 'toggleSectionFavorites':
@@ -1056,6 +1063,8 @@ export function initMainController() {
                     case 'toggleSectionTermsConditions':
                     case 'toggleSectionCookiePolicy':
                     case 'toggleSectionSendFeedback':
+                    case 'toggleSectionManageUsers':
+                    case 'toggleSectionManageGalleries':
                         const sectionName = action.substring("toggleSection".length);
                         const targetSection = sectionName.charAt(0).toLowerCase() + sectionName.slice(1);
                         const parentMenu = actionTarget.closest('[data-menu]');
@@ -1784,7 +1793,9 @@ export function initMainController() {
         'help/privacy-policy': { view: 'help', section: 'privacyPolicy' },
         'help/terms-conditions': { view: 'help', section: 'termsConditions' },
         'help/cookie-policy': { view: 'help', section: 'cookiePolicy' },
-        'help/send-feedback': { view: 'help', section: 'sendFeedback' }
+        'help/send-feedback': { view: 'help', section: 'sendFeedback' },
+        'admin/users': { view: 'admin', section: 'manageUsers' },
+        'admin/galleries': { view: 'admin', section: 'manageGalleries' }
     };
 
     let initialRoute = routes[path] || null;
@@ -1810,6 +1821,10 @@ export function initMainController() {
     }
 
     if (!initialRoute) {
+        initialRoute = { view: 'main', section: '404' };
+    }
+
+    if (initialRoute.view === 'admin' && window.USER_ROLE !== 'administrator') {
         initialRoute = { view: 'main', section: '404' };
     }
 
@@ -1894,6 +1909,18 @@ document.addEventListener('click', function(event) {
         if (userMenu) {
             userMenu.classList.add('disabled');
         }
+    }
+});
+
+// Check session on load
+fetch(`${window.BASE_PATH}/api/auth_handler.php`, {
+    method: 'POST',
+    body: new URLSearchParams({ 'action': 'check_session' })
+})
+.then(res => res.json())
+.then(data => {
+    if (data.loggedIn) {
+        window.USER_ROLE = data.userRole;
     }
 });
 }
