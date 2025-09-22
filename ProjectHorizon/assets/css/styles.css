@@ -1445,7 +1445,9 @@ body {
 
 .auth-switch-page a:hover {
     text-decoration: underline;
-}.user-avatar-container {
+}
+
+.user-avatar-container {
     position: relative;
 }
 
@@ -1472,15 +1474,6 @@ body {
     position: absolute;
     top: calc(100% + 5px);
     right: 0;
-    width: 240px; /* Ancho ajustado para el nuevo texto */
+    left: auto; /* CORRECCIÓN: Anula el 'left: 0' de la regla genérica .module-select */
+    width: 240px;
 }
-
-
-
-
-
-
-
-
-
-
