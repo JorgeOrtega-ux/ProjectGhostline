@@ -14,7 +14,18 @@
     "noResultsTitle": "No se encontraron resultados",
     "noResultsMessage": "Prueba con una búsqueda diferente para encontrar lo que buscas.",
     "connectionErrorTitle": "Error de Conexión",
-    "connectionErrorMessage": "Hubo un problema al intentar cargar el contenido. Por favor, inténtalo de nuevo más tarde."
+    "connectionErrorMessage": "Hubo un problema al intentar cargar el contenido. Por favor, inténtalo de nuevo más tarde.",
+    "public": "Público",
+    "private": "Privado",
+    "unlocked": "Desbloqueado",
+    "photosCount": "{count} fotos",
+    "photoCount": "{count} foto",
+    "edited": "Editado: {date}",
+    "added": "Agregado: {date}",
+    "viewed": "Visto: {date}",
+    "searchedIn": "en {section}",
+    "likesCount": "{count} Me gusta",
+    "interactionsCount": "{count} Vistas"
   },
   "header": {
     "mainMenuTooltip": "Menú principal",
@@ -61,7 +72,15 @@
   "photoView": {
     "backButtonTooltip": "Volver",
     "userTitle": "Usuario",
-    "favoriteButtonTooltip": "Añadir a favoritos"
+    "favoriteButtonTooltip": "Añadir a favoritos",
+    "rotateLeft": "Girar a la izquierda",
+    "rotateRight": "Girar a la derecha",
+    "download": "Descargar"
+  },
+  "photoCard": {
+    "openInNewTab": "Abrir en una pestaña nueva",
+    "copyLink": "Copiar el enlace",
+    "download": "Descargar"
   },
   "userPhotos": {
     "backButtonTooltip": "Volver",
@@ -101,7 +120,19 @@
       "openLinksTitle": "Abrir los enlaces en una pestaña nueva",
       "openLinksDescription": "Al activar esta opción, todos los enlaces se abrirán en una nueva pestaña para no interrumpir tu navegación actual.",
       "longerNotificationsTitle": "Aumenta el tiempo de permanencia de una notificación en la pantalla.",
-      "longerNotificationsDescription": "Las notificaciones permanecerán más tiempo en pantalla antes de desaparecer."
+      "longerNotificationsDescription": "Las notificaciones permanecerán más tiempo en pantalla antes de desaparecer.",
+      "languageOptions": {
+        "es-419": "Español (Latinoamérica)",
+        "en-US": "English (United States)",
+        "fr-FR": "Français (France)",
+        "de-DE": "Deutsch (Deutschland)",
+        "pt-BR": "Português (Brasil)"
+      },
+      "themeOptions": {
+        "system": "Sincronizar con el sistema",
+        "dark": "Tema oscuro",
+        "light": "Tema claro"
+      }
     },
     "historyPrivacy": {
       "title": "Historial y Privacidad",
@@ -152,7 +183,20 @@
     },
     "sendFeedback": {
       "title": "Enviar Comentarios",
-      "content": "Formulario para enviar comentarios..."
+      "description": "Tu opinión es importante para nosotros. Ayúdanos a mejorar Project Horizon.",
+      "issueTypeLabel": "Tipo de comentario",
+      "issueTypeDefault": "Selecciona una opción",
+      "issueTypeSuggestion": "Sugerir una mejora",
+      "issueTypeProblem": "Reportar un problema",
+      "issueTypeOther": "Otro",
+      "otherTitleLabel": "Por favor, especifica",
+      "otherTitlePlaceholder": "Escribe un título corto para tu comentario...",
+      "descriptionLabel": "Describe tu comentario",
+      "descriptionPlaceholder": "Escribe aquí los detalles...",
+      "attachmentsLabel": "Adjuntar capturas de pantalla (opcional)",
+      "uploadButton": "Añadir imágenes",
+      "fileUploadInfo": "Máximo 3 archivos. Límite total de 12 MB.",
+      "sendButton": "Enviar Comentario"
     }
   },
   "notifications": {
@@ -167,7 +211,8 @@
     "clearHistoryMessage": "<p>Esta acción eliminará permanentemente todo tu historial de la aplicación. No podrás deshacer esta acción.</p><a href=\"#\" data-action=\"view-history-help\">Más información</a>"
   },
   "404": {
-    "title": "404 - Not Found",
-    "message": "The page you are looking for does not exist."
+    "badge": "404",
+    "title": "Oops! Page not found.",
+    "message": "We couldn't find the page you're looking for. It might have been moved or doesn't exist anymore."
   }
 }

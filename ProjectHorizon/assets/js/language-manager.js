@@ -4,6 +4,9 @@ let translations = {};
 const availableLanguages = {
     'es-419': 'Español (Latinoamérica)',
     'en-US': 'English (United States)',
+    'fr-FR': 'Français (France)',
+    'de-DE': 'Deutsch (Deutschland)',
+    'pt-BR': 'Português (Brasil)'
 };
 
 async function fetchTranslations(langCode) {
@@ -13,14 +16,11 @@ async function fetchTranslations(langCode) {
             throw new Error(`Could not load ${langCode}.json`);
         }
         translations = await response.json();
-        applyTranslations(document.body);
     } catch (error) {
         console.error("Failed to fetch translations:", error);
-        // Fallback a un idioma por defecto si falla la carga
-        if (langCode !== 'es-419') {
-            await setLanguage('es-419');
-        }
+        translations = {};
     }
+    applyTranslations(document.body);
 }
 
 function getTranslation(key, replacements = {}) {
@@ -29,7 +29,7 @@ function getTranslation(key, replacements = {}) {
     for (const k of keys) {
         result = result[k];
         if (result === undefined) {
-            return key; // Devuelve la clave si no se encuentra la traducción
+            return key;
         }
     }
 
@@ -42,7 +42,7 @@ function getTranslation(key, replacements = {}) {
     return result;
 }
 
-function applyTranslations(element) {
+export function applyTranslations(element) {
     element.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
         el.textContent = getTranslation(key);
@@ -68,15 +68,27 @@ function getBestLanguageMatch() {
     if (primaryLang === 'es') return 'es-419';
     if (primaryLang === 'en') return 'en-US';
 
-    return 'es-419'; // Idioma por defecto
+    return 'es-419';
 }
 
+// ✅ FUNCIÓN CORREGIDA
 export function updateLanguageSelectorUI(langCode) {
     const langSelector = document.querySelector('[data-target="language-select"]');
     if (langSelector) {
         const langText = langSelector.querySelector('.select-trigger-text');
-        if (langText && availableLanguages[langCode]) {
-            langText.textContent = availableLanguages[langCode];
+        // Mapea los códigos de idioma a sus claves de traducción
+        const translationKeys = {
+            'es-419': 'settings.accessibility.languageOptions.es-419',
+            'en-US': 'settings.accessibility.languageOptions.en-US',
+            'fr-FR': 'settings.accessibility.languageOptions.fr-FR',
+            'de-DE': 'settings.accessibility.languageOptions.de-DE',
+            'pt-BR': 'settings.accessibility.languageOptions.pt-BR'
+        };
+        if (langText && translationKeys[langCode]) {
+            // 1. Establece el atributo data-i18n con la clave correcta
+            langText.setAttribute('data-i18n', translationKeys[langCode]);
+            // 2. Usa la función de traducción para obtener y mostrar el texto
+            langText.textContent = window.getTranslation(translationKeys[langCode]);
         }
     }
     const langOptionsContainer = document.getElementById('language-select');
@@ -106,6 +118,5 @@ export function initLanguageManager() {
     setLanguage(currentLang);
 }
 
-// Exportar funciones para uso global
 window.getTranslation = getTranslation;
 window.applyTranslations = applyTranslations;

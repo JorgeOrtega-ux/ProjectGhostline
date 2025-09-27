@@ -17,7 +17,7 @@
                         <div class="select-trigger-icon">
                             <span class="material-symbols-rounded">language</span>
                         </div>
-                        <span class="select-trigger-text">Español (Latinoamérica)</span>
+                        <span class="select-trigger-text" data-i18n="settings.accessibility.languageOptions.es-419"></span>
                         <div class="select-trigger-icon select-trigger-arrow">
                             <span class="material-symbols-rounded">expand_more</span>
                         </div>
@@ -25,13 +25,24 @@
                     <div class="module-content module-select disabled" id="language-select">
                         <div class="menu-content">
                             <div class="menu-list">
-                                <div class="menu-link" data-value="es-419">
-                                    <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span>Español (Latinoamérica)</span></div>
+                                <div class="menu-link" data-value="es-419"> <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.languageOptions.es-419"></span></div>
                                 </div>
                                 <div class="menu-link" data-value="en-US">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
-                                    <div class="menu-link-text"><span>English (United States)</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.languageOptions.en-US"></span></div>
+                                </div>
+                                <div class="menu-link" data-value="fr-FR">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.languageOptions.fr-FR"></span></div>
+                                </div>
+                                <div class="menu-link" data-value="de-DE">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.languageOptions.de-DE"></span></div>
+                                </div>
+                                <div class="menu-link" data-value="pt-BR">
+                                    <div class="menu-link-icon"><span class="material-symbols-rounded">language</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.languageOptions.pt-BR"></span></div>
                                 </div>
                             </div>
                         </div>
@@ -50,7 +61,7 @@
                         <div class="select-trigger-icon">
                             <span class="material-symbols-rounded">desktop_windows</span>
                         </div>
-                        <span class="select-trigger-text">Sincronizar con el sistema</span>
+                        <span class="select-trigger-text" data-i18n="settings.accessibility.themeOptions.system"></span>
                         <div class="select-trigger-icon select-trigger-arrow">
                             <span class="material-symbols-rounded">expand_more</span>
                         </div>
@@ -60,15 +71,15 @@
                             <div class="menu-list">
                                 <div class="menu-link" data-value="system">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">desktop_windows</span></div>
-                                    <div class="menu-link-text"><span>Sincronizar con el sistema</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.themeOptions.system"></span></div>
                                 </div>
                                 <div class="menu-link" data-value="dark">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">dark_mode</span></div>
-                                    <div class="menu-link-text"><span>Tema oscuro</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.themeOptions.dark"></span></div>
                                 </div>
                                 <div class="menu-link" data-value="light">
                                     <div class="menu-link-icon"><span class="material-symbols-rounded">light_mode</span></div>
-                                    <div class="menu-link-text"><span>Tema claro</span></div>
+                                    <div class="menu-link-text"><span data-i18n="settings.accessibility.themeOptions.light"></span></div>
                                 </div>
                             </div>
                         </div>
